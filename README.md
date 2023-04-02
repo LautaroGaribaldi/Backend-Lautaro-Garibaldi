@@ -8,7 +8,7 @@
 
 ---
 
-Servidor web creado en node.js con express.js con persistencia de memoria en archivos corriendo en servidor 8080
+Servidor web creado en node.js con express.js con persistencia de memoria en archivos corriendo en puerto 8080
 
 ### Endpoints
 
