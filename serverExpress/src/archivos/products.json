@@ -1,0 +1,145 @@
+[
+	{
+		"id": 1,
+		"title": "Computadora Gamer",
+		"description": "Computadora Gamer",
+		"price": 300,
+		"thumbnail": [
+			"https://www.megatecnologia.com.ar/images/1673361801095.jpg"
+		],
+		"code": "AAA001",
+		"category": "electronica",
+		"status": true,
+		"stock": 50
+	},
+	{
+		"id": 2,
+		"title": "Notebook domestica",
+		"description": "Notebook para uso domestico",
+		"price": 200,
+		"thumbnail": [
+			"https://www.megatecnologia.com.ar/images/1673361801095.jpg"
+		],
+		"code": "AAA002",
+		"category": "electronica",
+		"status": true,
+		"stock": 25
+	},
+	{
+		"id": 3,
+		"title": "Nintendo Switch",
+		"description": "Consola Nintendo Switch",
+		"price": 350,
+		"thumbnail": [
+			"https://www.megatecnologia.com.ar/images/1673361801095.jpg"
+		],
+		"code": "AAA003",
+		"category": "electronica",
+		"status": true,
+		"stock": 25
+	},
+	{
+		"id": 4,
+		"title": "Tablet domestica",
+		"description": "Tablet para uso domestico",
+		"price": 150,
+		"thumbnail": [
+			"https://www.megatecnologia.com.ar/images/1673361801095.jpg"
+		],
+		"code": "AAA004",
+		"category": "electronica",
+		"status": true,
+		"stock": 25
+	},
+	{
+		"id": 5,
+		"title": "Notebook gamer",
+		"description": "Notebook gamer",
+		"price": 300,
+		"thumbnail": [
+			"https://www.megatecnologia.com.ar/images/1673361801095.jpg"
+		],
+		"code": "AAA005",
+		"category": "electronica",
+		"status": true,
+		"stock": 25
+	},
+	{
+		"id": 6,
+		"title": "Computadora domestica",
+		"description": "Computadora para uso domestico",
+		"price": 200,
+		"thumbnail": [
+			"https://www.megatecnologia.com.ar/images/1673361801095.jpg"
+		],
+		"code": "AAA006",
+		"category": "electronica",
+		"status": true,
+		"stock": 25
+	},
+	{
+		"id": 7,
+		"title": "Joystick ps4",
+		"description": "Joystick Dual Shock 4 para Ps4",
+		"price": 100,
+		"thumbnail": [
+			"https://www.megatecnologia.com.ar/images/1673361801095.jpg"
+		],
+		"code": "AAA007",
+		"category": "electronica",
+		"status": true,
+		"stock": 25
+	},
+	{
+		"id": 8,
+		"title": "Mouse wirless logitech",
+		"description": "Mouse Wirless marca logitech",
+		"price": 50,
+		"thumbnail": [
+			"https://www.megatecnologia.com.ar/images/1673361801095.jpg"
+		],
+		"code": "AAA008",
+		"category": "electronica",
+		"status": true,
+		"stock": 25
+	},
+	{
+		"id": 9,
+		"title": "Play Station 4",
+		"description": "Consola Play Station 4",
+		"price": 300,
+		"thumbnail": [
+			"https://www.megatecnologia.com.ar/images/1673361801095.jpg"
+		],
+		"code": "AAA009",
+		"category": "electronica",
+		"status": true,
+		"stock": 25
+	},
+	{
+		"id": 10,
+		"title": "Play Station 5",
+		"description": "Consola Play Station 5",
+		"price": 450,
+		"thumbnail": [
+			"https://www.megatecnologia.com.ar/images/1673361801095.jpg"
+		],
+		"code": "AAA010",
+		"category": "electronica",
+		"status": true,
+		"stock": 25
+	},
+	{
+		"id": 11,
+		"title": "Computadora apple",
+		"description": "Computadora appel",
+		"price": 900,
+		"thumbnail": [
+			"https://www.megatecnologia.com.ar/images/1673361801095.jpg"
+		],
+		"code": "AAA011",
+		"category": "electronica",
+		"status": false,
+		"stock": 21
+	}
+]
