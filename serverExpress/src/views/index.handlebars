@@ -1,0 +1,20 @@
+<div>
+    <h1>
+        {{title}}
+    </h1>
+</div>
+<div class="conteiner">
+    <table class="estilo">
+        <tr>
+            <th>Producto</th>
+            <th>Precio</th>
+        </tr>
+        {{#each products}}
+            <tr>
+                <td>{{this.title}}</td>
+                <td>{{this.price}}</td>
+            </tr>
+        {{/each}}
+    </table>
+</div>
+<script src="/static/js/main.js"></script>

@@ -1,0 +1,22 @@
+h1 {
+    text-align: center;
+    color: blue;
+  }
+
+.pepe {
+    color: red
+}
+
+th, td {
+  border: 1px solid black;
+}
+table {
+  border: 6px solid black;
+}
+
+.conteiner{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+}

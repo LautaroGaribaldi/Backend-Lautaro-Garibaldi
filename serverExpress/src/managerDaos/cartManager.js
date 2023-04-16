@@ -8,7 +8,7 @@ class CartManager {
 
     getCarts = async () => {
         try {
-            const data = await fs.promises.readFile(this.path, "utf-8"); //leo mi archivo products.js pasado en el path.
+            const data = await fs.promises.readFile(this.path, "utf-8"); //leo mi archivo carts.json pasado en el path.
             this.carts = JSON.parse(data); // transformo la informacion para utilizarla
             return this.carts;
         } catch (error) {
@@ -30,10 +30,10 @@ class CartManager {
     };
     addCart = async (cart) => {
         try {
-            await this.getCarts(); // leo mis productos
-            this.carts.push(cart); //pusheo mi producto
+            await this.getCarts(); // leo mis carritos
+            this.carts.push(cart); //pusheo mi carrito
             await fs.promises.writeFile(this.path, JSON.stringify(this.carts, "utf-8", "\t"));
-            console.log(cart); //Guardo mi array products en mi archivo.
+            console.log(cart); //Guardo mi array carts en mi archivo.
             return `Se ah agregado el Carrito id ${cart.id}`;
         } catch (error) {
             return error;
@@ -43,7 +43,7 @@ class CartManager {
     addProduct = async (id, idProd) => {
         try {
             await this.getCarts();
-            let cart = this.carts.find((cart) => cart.id === id); // busco si en mi array products existe el id pasado.
+            let cart = this.carts.find((cart) => cart.id === id); // busco si en mi array carts existe el id pasado.
             console.log("carrito filtrado: ", cart);
             const productRepeated = cart.products.findIndex((prod) => prod.product === idProd); // Verifico si encuentro el codigo de producto pasado por parametro
             console.log("Producto Repetido", productRepeated);
@@ -52,7 +52,7 @@ class CartManager {
             } else {
                 cart.products.push({ product: idProd, quantity: 1 });
             }
-            await fs.promises.writeFile(this.path, JSON.stringify(this.carts, "utf-8", "\t")); // vuelvo a guardar mi array de productos en mi archivo.
+            await fs.promises.writeFile(this.path, JSON.stringify(this.carts, "utf-8", "\t")); // vuelvo a guardar mi array de carts en mi archivo.
             return "Producto Actualizado";
         } catch (error) {
             return error;

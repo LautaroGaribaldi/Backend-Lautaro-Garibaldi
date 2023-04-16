@@ -74,13 +74,15 @@ router.post("/", async (req, res) => {
             !product.title || // Verifico que ningun campo este vacio
             !product.description ||
             !product.price ||
-            !product.thumbnail ||
             !product.stock ||
             !product.code ||
             !product.category
         )
             return res.status(405).send({ status: "ERROR", error: "hay algun campo vacio!" });
         // Verifico si me paso status, sino le agrego por defecto true.
+        if (product.thumbnail === undefined) {
+            product.thumbnail = [];
+        }
         if (product.status === undefined) {
             product.status = true;
         }
@@ -88,7 +90,7 @@ router.post("/", async (req, res) => {
         manager.addProduct({ id: prodId, ...product }); // si todo es correcto agrego el producto.
         res.status(200).send({
             status: "success",
-            payload: product,
+            payload: { id: prodId, ...product },
         });
     } catch (error) {
         res.status(500).send({
