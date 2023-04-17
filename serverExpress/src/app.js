@@ -39,16 +39,12 @@ app.use((err, req, res, next) => {
     console.log(err);
     res.status(500).send("Algo salio mal.");
 });
-
+// Implementaicon de Socket.Io
 const httpServer = app.listen(8080, () => {
     console.log("Escuchando puerto 8080");
 });
 
 const socketServer = new Server(httpServer);
-
-app.get("/realTime", (req, res) => {
-    res.render("realTimeProducts", {});
-});
 
 socketServer.on("connection", (socket) => {
     console.log("Nuevo Cliente Conectado.");
@@ -61,5 +57,18 @@ socketServer.on("connection", (socket) => {
             const data = await manager.getProducts();
             return socketServer.emit("newList", data);
         }
+        if (!id) {
+            socketServer.emit("newList", { status: "error", message: `No se encontro el producto con id ${pid.id}` });
+        }
+    });
+
+    socket.on("newProduct", async (data) => {
+        let datas = await manager.addProduct(data);
+        if (datas.status === "error") {
+            let error = datas.message;
+            return socketServer.emit("productAdd", { status: "error", message: error });
+        }
+        const newData = await manager.getProducts();
+        return socketServer.emit("productAdd", newData);
     });
 });

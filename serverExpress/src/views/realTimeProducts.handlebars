@@ -3,7 +3,7 @@
         {{title}}
     </h1>
 </div>
-<div>
+<div class="conteiner">
 
     <table id="tableProduct" >
         <thead>
@@ -38,14 +38,14 @@
 <div >
     <div >
         <form id="formDelete" >
-            <h3 >Delete a Product</h3>
+            <h3 >Borrar producto</h3>
             <input type="number" required id="deleteProd" name="deleteProd" placeholder="Ingrese el id">
             <input  type="submit" value="Eliminar">
         </form>
     </div>
     <div >
         <form id="addProduct" >
-            <h3 >Add a Product</h3>
+            <h3 >Agregar producto</h3>
             <input type="text" required id="title" name="title" placeholder="Ingrese el nombre" >
             <input type="number" required id="price" name="price" placeholder="Ingrese el precio" >
             <input type="text" required id="code" name="code" placeholder="Ingrese el code" >
@@ -54,7 +54,6 @@
             <input type="text" required id="description" name="description" placeholder="Ingrese la descripcion" >
             <label >
                 <input type="checkbox" name="status" id="status" value="true">
-                <span ></span>
             </label> Status
             <input  type="file" name="thumbnail" id="thumbnail" placeholder="Ingrese imagen"><br>
             <input type="submit" value="Cargar">

@@ -29,13 +29,38 @@ class ProductManager {
         }
     };
 
-    addProduct = async (producto) => {
+    addProduct = async (product) => {
         try {
             await this.getProducts(); // leo mis productos
-            this.products.push(producto); //pusheo mi producto
+            let codProd = this.products.find((prod) => prod.code === product.code);
+            let prodId = 0;
+            if (this.products.length === 0) {
+                // Verifico si hay algun producto. si no lo hay el primer id es 1 sino tomo el ultimo id y le sumo 1
+                prodId = 1; // asi evito que al borrar un producto no me repita id si solo tomara el largo de mi array products.
+            } else {
+                prodId = this.products[this.products.length - 1].id + 1;
+            }
+            if (
+                !product.title || // Verifico que ningun campo este vacio
+                !product.description ||
+                !product.price ||
+                !product.stock ||
+                !product.code ||
+                !product.category
+            )
+                return { status: "error", message: "Todos los campos son requeridos!" };
+
+            if (product.thumbnail === undefined) {
+                product.thumbnail = [];
+            }
+            if (product.status === undefined) {
+                product.status = true;
+            }
+            if (codProd) return { status: "error", message: "Code repetido!" };
+            this.products.push({ id: prodId, ...product }); //pusheo mi producto
             await fs.promises.writeFile(this.path, JSON.stringify(this.products, "utf-8", "\t"));
-            console.log(producto); //Guardo mi array products en mi archivo.
-            return `Se ah agregado el producto ${producto.title}`;
+            console.log(product); //Guardo mi array products en mi archivo.
+            return `Se ah agregado el producto ${product.title}`;
         } catch (error) {
             return error;
         }

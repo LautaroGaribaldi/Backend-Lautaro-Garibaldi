@@ -60,37 +60,17 @@ router.get("/:pid", async (req, res) => {
 router.post("/", async (req, res) => {
     // Endpoint products (mostrar productos con posibilidad de definir limite).
     try {
-        let data = await manager.getProducts(); // Obtengo mis productos.
         let product = await req.body;
-        let codProd = data.find((prod) => prod.code === product.code); // Verifico si mi code pasado ya fue utilizado
-        let prodId = 0;
-        if (data.length === 0) {
-            // Verifico si hay algun producto. si no lo hay el primer id es 1 sino tomo el ultimo id y le sumo 1
-            prodId = 1; // asi evito que al borrar un producto no me repita id si solo tomara el largo de mi array products.
-        } else {
-            prodId = data[data.length - 1].id + 1;
+        let data = await manager.addProduct(product); // si todo es correcto agrego el producto.
+        console.log(data);
+        if (data.status === "error") {
+            return res.status(404).send({
+                data,
+            });
         }
-        if (
-            !product.title || // Verifico que ningun campo este vacio
-            !product.description ||
-            !product.price ||
-            !product.stock ||
-            !product.code ||
-            !product.category
-        )
-            return res.status(405).send({ status: "ERROR", error: "hay algun campo vacio!" });
-        // Verifico si me paso status, sino le agrego por defecto true.
-        if (product.thumbnail === undefined) {
-            product.thumbnail = [];
-        }
-        if (product.status === undefined) {
-            product.status = true;
-        }
-        if (codProd) return res.status(405).send({ status: "ERROR", error: `Code repetido. Code ${product.code} ya fue utilizado.` }); // si el code es repetido mando el error.
-        manager.addProduct({ id: prodId, ...product }); // si todo es correcto agrego el producto.
         res.status(200).send({
             status: "success",
-            payload: { id: prodId, ...product },
+            payload: product,
         });
     } catch (error) {
         res.status(500).send({

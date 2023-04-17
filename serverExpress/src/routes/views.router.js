@@ -14,7 +14,7 @@ router.get("/", async (req, res) => {
             title: "Productos",
             products,
         };
-        res.render("index", object);
+        res.render("home", object);
     } catch (error) {}
 });
 
