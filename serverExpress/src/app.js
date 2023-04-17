@@ -4,6 +4,7 @@ const productRouter = require("./routes/products.router.js");
 const cartRouter = require("./routes/cart.router.js");
 const viewsRouter = require("./routes/views.router.js");
 const { uploader } = require("./utils.js");
+const { Server } = require("socket.io");
 const { ProductManager } = require("./managerDaos/productManager"); // Imp
 
 const path = "./src/archivos/products.json"; // Genero mi path para pasarle a mi clase.
@@ -39,6 +40,26 @@ app.use((err, req, res, next) => {
     res.status(500).send("Algo salio mal.");
 });
 
-app.listen(8080, () => {
+const httpServer = app.listen(8080, () => {
     console.log("Escuchando puerto 8080");
+});
+
+const socketServer = new Server(httpServer);
+
+app.get("/realTime", (req, res) => {
+    res.render("realTimeProducts", {});
+});
+
+socketServer.on("connection", (socket) => {
+    console.log("Nuevo Cliente Conectado.");
+
+    socket.on("productDelete", async (pid) => {
+        const id = await manager.getProductById(parseInt(pid.id));
+        console.log(id);
+        if (id) {
+            await manager.deleteProduct(parseInt(pid.id));
+            const data = await manager.getProducts();
+            return socketServer.emit("newList", data);
+        }
+    });
 });

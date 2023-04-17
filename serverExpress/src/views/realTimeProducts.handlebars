@@ -3,17 +3,64 @@
         {{title}}
     </h1>
 </div>
-<div class="conteiner">
-    <table class="estilo">
-        <tr>
-            <th>Producto</th>
-            <th>Precio</th>
-        </tr>
-        {{#each products}}
+<div>
+
+    <table id="tableProduct" >
+        <thead>
             <tr>
+            <th >ID</th>
+            <th >Name</th>
+            <th >Price</th>
+            <th >code</th>
+            <th >stock</th>
+            <th >category</th>
+            <th >description</th>
+            <th >status</th>
+            </tr>
+        </thead>
+        {{#each products}}
+            <tbody>
+                <tr>
+                <td>{{this.id}}</td>
                 <td>{{this.title}}</td>
                 <td>{{this.price}}</td>
-            </tr>
+                <td>{{this.code}}</td>
+                <td>{{this.stock}}</td>
+                <td>{{this.category}}</td>
+                <td>{{this.description}}</td>
+                <td>{{this.status}}</td>
+                </tr>
+            </tbody>
         {{/each}}
-    </table>
+        </table>
+
 </div>
+<div >
+    <div >
+        <form id="formDelete" >
+            <h3 >Delete a Product</h3>
+            <input type="number" required id="deleteProd" name="deleteProd" placeholder="Ingrese el id">
+            <input  type="submit" value="Eliminar">
+        </form>
+    </div>
+    <div >
+        <form id="addProduct" >
+            <h3 >Add a Product</h3>
+            <input type="text" required id="title" name="title" placeholder="Ingrese el nombre" >
+            <input type="number" required id="price" name="price" placeholder="Ingrese el precio" >
+            <input type="text" required id="code" name="code" placeholder="Ingrese el code" >
+            <input type="number" required id="stock" name="stock" placeholder="Ingrese el stock" >
+            <input type="text" required id="category" name="categoty" placeholder="Ingrese la categoria" >
+            <input type="text" required id="description" name="description" placeholder="Ingrese la descripcion" >
+            <label >
+                <input type="checkbox" name="status" id="status" value="true">
+                <span ></span>
+            </label> Status
+            <input  type="file" name="thumbnail" id="thumbnail" placeholder="Ingrese imagen"><br>
+            <input type="submit" value="Cargar">
+        </form>
+    </div>
+</div>
+<script src="/socket.io/socket.io.min.js"></script>
+<script src="static/js/realTimeProducts.js"></script>
+<script src=" https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.all.min.js "></script>
