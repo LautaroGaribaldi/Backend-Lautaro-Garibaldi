@@ -1,8 +1,10 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
+const objectConfig = require("./config/objectConfig.js");
 const productRouter = require("./routes/products.router.js");
 const cartRouter = require("./routes/cart.router.js");
 const viewsRouter = require("./routes/views.router.js");
+const userRouter = require("./routes/user.router.js");
 const { uploader } = require("./utils.js");
 const { Server } = require("socket.io");
 const { ProductManager } = require("./managerDaos/productManager"); // Imp
@@ -27,6 +29,7 @@ app.use("/static", express.static(__dirname + "/public"));
 app.use("/", viewsRouter);
 app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
+app.use("/api/users", userRouter);
 
 app.post("/single", uploader.single("myfile"), async (req, res) => {
     res.status(200).send({
@@ -44,9 +47,12 @@ const httpServer = app.listen(8080, () => {
     console.log("Escuchando puerto 8080");
 });
 
-const socketServer = new Server(httpServer);
+const io = new Server(httpServer);
 
-socketServer.on("connection", (socket) => {
+objectConfig.connectDB();
+
+let messages = [];
+io.on("connection", (socket) => {
     console.log("Nuevo Cliente Conectado.");
 
     socket.on("productDelete", async (pid) => {
@@ -55,10 +61,10 @@ socketServer.on("connection", (socket) => {
         if (id) {
             await manager.deleteProduct(parseInt(pid.id));
             const data = await manager.getProducts();
-            return socketServer.emit("newList", data);
+            return io.emit("newList", data);
         }
         if (!id) {
-            socketServer.emit("newList", { status: "error", message: `No se encontro el producto con id ${pid.id}` });
+            socket.emit("newList", { status: "error", message: `No se encontro el producto con id ${pid.id}` });
         }
     });
 
@@ -66,9 +72,19 @@ socketServer.on("connection", (socket) => {
         let datas = await manager.addProduct(data);
         if (datas.status === "error") {
             let error = datas.message;
-            return socketServer.emit("productAdd", { status: "error", message: error });
+            return socket.emit("productAdd", { status: "error", message: error });
         }
         const newData = await manager.getProducts();
-        return socketServer.emit("productAdd", newData);
+        return io.emit("productAdd", newData);
+    });
+
+    socket.on("authenticated", (data) => {
+        socket.broadcast.emit("newUserConected", data);
+    });
+
+    socket.on("message", (data) => {
+        //console.log(data);
+        messages.push(data);
+        io.emit("messageLogs", messages);
     });
 });

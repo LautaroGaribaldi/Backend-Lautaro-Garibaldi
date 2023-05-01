@@ -18,6 +18,18 @@ router.get("/", async (req, res) => {
     } catch (error) {}
 });
 
+router.get("/chat", async (req, res) => {
+    try {
+        //const products = await manager.getProducts();
+        /*const object = {
+            style: "index.css",
+            title: "Productos",
+            products,
+        };*/
+        res.render("chat", {});
+    } catch (error) {}
+});
+
 router.get("/realTimeProducts", async (req, res) => {
     const products = await manager.getProducts();
     const object = {

@@ -2,11 +2,10 @@ const socket = io();
 console.log("me conecte bien");
 
 const formDelete = document.getElementById("formDelete");
-const id = document.getElementById("deleteProd");
 
 formDelete.addEventListener("submit", (evt) => {
     evt.preventDefault();
-    socket.emit("productDelete", { id: id.value });
+    socket.emit("productDelete", { id: formDelete.elements.deleteProd.value });
 });
 
 //Cambiar lista si se borra un producto en tiempo real.
@@ -15,6 +14,7 @@ socket.on("newList", (data) => {
     if (data.status === "error") {
         return console.log(data.message);
     }
+    formDelete.reset();
     let list = "";
     data.forEach(({ id, title, price, code, stock, category, description, status }) => {
         list += `
@@ -45,28 +45,19 @@ socket.on("newList", (data) => {
 });
 
 const addForm = document.querySelector("#addProduct");
-const product = document.querySelectorAll("input");
-const title = document.getElementById("title");
-const price = document.getElementById("price");
-const code = document.getElementById("code");
-const stock = document.getElementById("stock");
-const category = document.getElementById("category");
-const description = document.getElementById("description");
-const statuss = document.getElementById("status");
-const thumbnail = document.getElementById("thumbnail");
 
 addForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
     socket.emit("newProduct", {
-        title: title.value,
-        price: price.value,
-        code: code.value,
-        stock: stock.value,
-        category: category.value,
-        description: description.value,
-        status: statuss.value,
-        thumbnail: thumbnail.value,
+        title: addForm.elements.title.value,
+        price: addForm.elements.price.value,
+        code: addForm.elements.code.value,
+        stock: addForm.elements.stock.value,
+        category: addForm.elements.category.value,
+        description: addForm.elements.description.value,
+        status: addForm.elements.status.value,
+        thumbnail: addForm.elements.thumbnail.value,
     });
 });
 
@@ -74,6 +65,7 @@ socket.on("productAdd", (data) => {
     if (data.status === "error") {
         return console.log(data.message);
     }
+    addForm.reset();
     let list = "";
     data.forEach(({ id, title, price, code, stock, category, description, status }) => {
         list += `<tr>
