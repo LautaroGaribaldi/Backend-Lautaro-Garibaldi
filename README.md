@@ -74,4 +74,4 @@ Una vez levantado el servido con el comando npm run dev puede consultar los sigu
 ---
 
 Parado en la ruta de app.sj (dentro de la carpeta serverExpress), correr el comando npm run dev
-Luego con Postman o un buscador web vaya a " http://localhost:8080/products " para comenzar a probar los endpoints.
+Luego con Postman o un buscador web vaya a " http://localhost:8080/api/products " para comenzar a probar los endpoints.
