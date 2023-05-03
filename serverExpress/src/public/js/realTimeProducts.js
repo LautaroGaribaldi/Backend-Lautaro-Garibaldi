@@ -10,16 +10,26 @@ formDelete.addEventListener("submit", (evt) => {
 
 //Cambiar lista si se borra un producto en tiempo real.
 socket.on("newList", (data) => {
-    //console.log(data);
+    console.log(data);
     if (data.status === "error") {
+        Swal.fire({
+            title: "ERROR",
+            text: data.message,
+            icon: "error",
+        });
         return console.log(data.message);
     }
+    Swal.fire({
+        title: "Producto borrado",
+        text: `Se borro el producto ${formDelete.elements.deleteProd.value}`,
+        icon: "success",
+    });
     formDelete.reset();
     let list = "";
-    data.forEach(({ id, title, price, code, stock, category, description, status }) => {
+    data.forEach(({ _id, title, price, code, stock, category, description, status }) => {
         list += `
         <tr>
-        <td>${id}</td>
+        <td>${_id}</td>
         <td>${title}</td>
         <td>${price}</td>
         <td>${code}</td>
@@ -48,6 +58,7 @@ const addForm = document.querySelector("#addProduct");
 
 addForm.addEventListener("submit", (e) => {
     e.preventDefault();
+    console.log(addForm.elements.thumbnail.value);
 
     socket.emit("newProduct", {
         title: addForm.elements.title.value,
@@ -63,13 +74,18 @@ addForm.addEventListener("submit", (e) => {
 
 socket.on("productAdd", (data) => {
     if (data.status === "error") {
+        Swal.fire({
+            title: "ERROR",
+            text: data.message,
+            icon: "error",
+        });
         return console.log(data.message);
     }
     addForm.reset();
     let list = "";
-    data.forEach(({ id, title, price, code, stock, category, description, status }) => {
+    data.forEach(({ _id, title, price, code, stock, category, description, status }) => {
         list += `<tr>
-        <td>${id}</td>
+        <td>${_id}</td>
         <td>${title}</td>
         <td>${price}</td>
         <td>${code}</td>

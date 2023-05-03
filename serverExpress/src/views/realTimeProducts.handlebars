@@ -21,7 +21,7 @@
         {{#each products}}
             <tbody>
                 <tr>
-                <td>{{this.id}}</td>
+                <td>{{this._id}}</td>
                 <td>{{this.title}}</td>
                 <td>{{this.price}}</td>
                 <td>{{this.code}}</td>
@@ -39,7 +39,7 @@
     <div >
         <form id="formDelete" >
             <h3 >Borrar producto</h3>
-            <input type="number" required id="deleteProd" name="deleteProd" placeholder="Ingrese el id">
+            <input type="text" required id="deleteProd" name="deleteProd" placeholder="Ingrese el id">
             <input  type="submit" value="Eliminar">
         </form>
     </div>

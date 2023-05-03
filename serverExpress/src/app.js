@@ -1,16 +1,14 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const objectConfig = require("./config/objectConfig.js");
-const productRouter = require("./routes/products.router.js");
-const cartRouter = require("./routes/cart.router.js");
-const viewsRouter = require("./routes/views.router.js");
-const userRouter = require("./routes/user.router.js");
-const { uploader } = require("./utils.js");
+const routerApp = require("./routes");
 const { Server } = require("socket.io");
-const { ProductManager } = require("./managerDaos/productManager"); // Imp
+//const { ProductManager } = require("./managerDaos/productManager"); // Imp
+const productManager = require("./managerDaos/mongo/product.mongo.js");
+const messageManager = require("./managerDaos/mongo/messsage.mongo");
 
-const path = "./src/archivos/products.json"; // Genero mi path para pasarle a mi clase.
-const manager = new ProductManager(path); // Genero mi ProductManager.
+//const path = "./src/archivos/products.json"; // Genero mi path para pasarle a mi clase.
+//const manager = new ProductManager(path); // Genero mi ProductManager.
 
 const app = express();
 
@@ -26,17 +24,7 @@ app.use(express.urlencoded({ extended: true })); // Configuro mi servidor para q
 app.use(cookieParser());
 app.use("/static", express.static(__dirname + "/public"));
 
-app.use("/", viewsRouter);
-app.use("/api/products", productRouter);
-app.use("/api/carts", cartRouter);
-app.use("/api/users", userRouter);
-
-app.post("/single", uploader.single("myfile"), async (req, res) => {
-    res.status(200).send({
-        status: "success",
-        message: "se subió correctamente",
-    });
-});
+app.use(routerApp);
 
 app.use((err, req, res, next) => {
     console.log(err);
@@ -51,30 +39,34 @@ const io = new Server(httpServer);
 
 objectConfig.connectDB();
 
-let messages = [];
 io.on("connection", (socket) => {
     console.log("Nuevo Cliente Conectado.");
 
     socket.on("productDelete", async (pid) => {
-        const id = await manager.getProductById(parseInt(pid.id));
-        console.log(id);
-        if (id) {
-            await manager.deleteProduct(parseInt(pid.id));
-            const data = await manager.getProducts();
-            return io.emit("newList", data);
+        const id = await productManager.getProductById(pid.id);
+        if (!id || id.status === "error") {
+            return socket.emit("newList", { status: "error", message: `No se encontro el producto con id ${pid.id}` });
         }
-        if (!id) {
-            socket.emit("newList", { status: "error", message: `No se encontro el producto con id ${pid.id}` });
+        if (!id.error) {
+            await productManager.deleteProduct(pid.id);
+            const data = await productManager.getProducts();
+            return io.emit("newList", data);
         }
     });
 
     socket.on("newProduct", async (data) => {
-        let datas = await manager.addProduct(data);
+        let datas = await productManager.addProduct(data);
         if (datas.status === "error") {
-            let error = datas.message;
-            return socket.emit("productAdd", { status: "error", message: error });
+            let msgError;
+            let error = datas.error;
+            if (error.code === 11000) {
+                msgError = `No se pudo crear el producto. code ${error.keyValue.code} repetido`;
+            } else {
+                msgError = "No se pudo crear el producto. algun campo no fue completado.";
+            }
+            return socket.emit("productAdd", { status: "error", message: msgError });
         }
-        const newData = await manager.getProducts();
+        const newData = await productManager.getProducts();
         return io.emit("productAdd", newData);
     });
 
@@ -82,9 +74,9 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("newUserConected", data);
     });
 
-    socket.on("message", (data) => {
-        //console.log(data);
-        messages.push(data);
-        io.emit("messageLogs", messages);
+    socket.on("message", async (data) => {
+        let result = await messageManager.addMessage(data);
+        let messagess = await messageManager.getMessages();
+        io.emit("messageLogs", messagess);
     });
 });

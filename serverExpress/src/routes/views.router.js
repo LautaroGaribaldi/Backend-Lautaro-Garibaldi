@@ -1,14 +1,15 @@
 const { Router } = require("express"); // Importo Router de express
-const { ProductManager } = require("../managerDaos/productManager"); // Importo mi clase ProductManager.
+//const { ProductManager } = require("../managerDaos/productManager"); // Importo mi clase ProductManager.
 
-const path = "./src/archivos/products.json"; // Genero mi path para pasarle a mi clase.
-const manager = new ProductManager(path); // Genero mi ProductManager.
+//const path = "./src/archivos/products.json"; // Genero mi path para pasarle a mi clase.
+//const manager = new ProductManager(path); // Genero mi ProductManager.
+const productManager = require("../managerDaos/mongo/product.mongo.js");
 
 const router = Router();
 
 router.get("/", async (req, res) => {
     try {
-        const products = await manager.getProducts();
+        const products = await productManager.getProducts();
         const object = {
             style: "index.css",
             title: "Productos",
@@ -26,12 +27,12 @@ router.get("/chat", async (req, res) => {
             title: "Productos",
             products,
         };*/
-        res.render("chat", {});
+        res.render("chat", { style: "index.css" });
     } catch (error) {}
 });
 
 router.get("/realTimeProducts", async (req, res) => {
-    const products = await manager.getProducts();
+    const products = await productManager.getProducts();
     const object = {
         style: "index.css",
         title: "Productos en tiempo real",

@@ -141,5 +141,16 @@
 		"category": "electronica",
 		"status": false,
 		"stock": 21
+	},
+	{
+		"id": 12,
+		"title": "fafa",
+		"price": "121",
+		"code": "sssa",
+		"stock": "12",
+		"category": "dasd",
+		"description": "dsas",
+		"status": "true",
+		"thumbnail": ""
 	}
 ]

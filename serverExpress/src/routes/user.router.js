@@ -1,5 +1,5 @@
 const { Router } = require("express"); // Importo Router de express
-const { userModel } = require("../models/user.model"); // importo mi modelo de objetos
+const { userModel } = require("../managerDaos/mongo/model/user.model"); // importo mi modelo de objetos
 
 const router = Router();
 
@@ -7,7 +7,6 @@ const router = Router();
 router.get("/", async (req, res) => {
     try {
         let users = await userModel.find(); // busco todos mis users
-        console.log(users);
         res.send({
             status: "Success",
             payload: users,
