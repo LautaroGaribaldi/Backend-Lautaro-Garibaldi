@@ -6,7 +6,8 @@ const cartSchema = new Schema({
     product: [
         {
             idProduct: {
-                type: String,
+                type: Schema.Types.ObjectId,
+                ref: "products",
                 required: true,
             },
             quantity: {
@@ -15,6 +16,10 @@ const cartSchema = new Schema({
             },
         },
     ],
+});
+
+cartSchema.pre("findOne", function () {
+    this.populate("product.idProduct");
 });
 
 const cartModel = model(collection, cartSchema);

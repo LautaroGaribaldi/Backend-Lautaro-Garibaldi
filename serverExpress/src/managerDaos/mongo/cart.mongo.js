@@ -25,7 +25,7 @@ class CartManagerMongo {
     addProduct = async (cid, pid) => {
         try {
             const cart = await cartModel.findOne({ _id: cid });
-            const products = cart.product.find((producto) => producto.idProduct === pid); // Verifico si mi carrito ya tiene el producto que me paso.
+            const products = cart.product.find((producto) => producto.idProduct == pid); // Verifico si mi carrito ya tiene el producto que me paso.
             if (!products) {
                 return await cartModel.updateOne({ _id: cid }, { $push: { product: { idProduct: pid, quantity: 1 } } });
             } else {
