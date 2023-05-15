@@ -20,3 +20,17 @@ table {
   flex-wrap: nowrap;
   justify-content: center;
 }
+.cards{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.cardsItems{
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  padding: 10px;
+  border: 3px solid aqua;
+  width: 191px;
+}

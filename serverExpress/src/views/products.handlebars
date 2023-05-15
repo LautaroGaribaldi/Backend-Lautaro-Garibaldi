@@ -1,0 +1,25 @@
+<div>
+    <div class="cards">
+        {{#each products}}
+            <div class="cardsItems">
+                <strong>id</strong>{{this._id}}
+                <strong>nombre</strong>{{this.title}}
+                <strong>descripcion</strong>{{this.description}}
+                <strong>code</strong>{{this.code}}
+                <strong>categoria</strong>{{this.category}}
+                <strong>stock</strong>{{this.stock}}
+                <strong>status</strong>{{this.status}}
+                <strong>precio</strong>{{this.price}}
+
+            </div>
+        {{/each}}
+    </div>
+    <center>
+        {{#if hasPrevPage}}
+            <a href="/products?page={{prevPage}}"><button>anterior</button></a>
+        {{/if}}
+        {{#if hasNextPage}}
+            <a href="/products?page={{nextPage}}"><button>Siguiente</button></a>
+        {{/if}}
+    </center>
+</div>

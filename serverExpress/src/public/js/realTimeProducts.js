@@ -26,7 +26,7 @@ socket.on("newList", (data) => {
     });
     formDelete.reset();
     let list = "";
-    data.forEach(({ _id, title, price, code, stock, category, description, status }) => {
+    data.payload.forEach(({ _id, title, price, code, stock, category, description, status }) => {
         list += `
         <tr>
         <td>${_id}</td>
@@ -81,9 +81,10 @@ socket.on("productAdd", (data) => {
         });
         return console.log(data.message);
     }
+    console.log(data);
     addForm.reset();
     let list = "";
-    data.forEach(({ _id, title, price, code, stock, category, description, status }) => {
+    data.payload.forEach(({ _id, title, price, code, stock, category, description, status }) => {
         list += `<tr>
         <td>${_id}</td>
         <td>${title}</td>

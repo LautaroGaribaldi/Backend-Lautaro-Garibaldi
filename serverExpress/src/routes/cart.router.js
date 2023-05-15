@@ -1,17 +1,9 @@
 const { Router } = require("express"); // Importo Router de express
-//const { CartManager } = require("../managerDaos/cartManager"); // Importo mi clase CartManager.
-//const { ProductManager } = require("../managerDaos/productManager"); // Importo mi clase ProductManager.
 const cartManager = require("../managerDaos/mongo/cart.mongo");
 const productManager = require("../managerDaos/mongo/product.mongo.js");
-
-//const path = "./src/archivos/carts.json"; // Genero mi path para pasarle a mi clase.
-//const manager = new CartManager(path); // Genero mi CartManager.
-
-//const pathProducts = "./src/archivos/products.json";
-//const managerProduct = new ProductManager(pathProducts);
+const { verifyCid, verifyPid } = require("../utils/cartValidator"); // funciones de validacion extraidas
 
 const router = Router();
-// modularizo mis rutas en express.
 
 //POST
 
@@ -44,25 +36,19 @@ router.post("/:cid/product/:pid", async (req, res) => {
     try {
         const { cid, pid } = req.params;
 
-        const cart = await cartManager.getCartById(cid); // Verifico si el cid que paso existe
-        if (!cart || cart.status === "error") {
-            return res.status(404).send({
-                status: "error",
-                error: `No existe el carrito id ${cid}`,
-            });
+        const isValidCid = await verifyCid(cid);
+        if (!isValidCid) {
+            return res.status(404).send({ status: "error", error: `No existe el carrito id ${cid}` });
         }
-        const product = await productManager.getProductById(pid); // Verifico si el pid que paso existe
-
-        if (!product || product.status === "error") {
+        const isPidValid = await verifyPid(pid); // Verifica si el pid que pasaste existe
+        if (!isPidValid) {
             return res.status(404).send({
                 status: "error",
                 error: `No existe el producto id ${pid}`,
             });
         }
 
-        //console.log(cart.status);
         result = await cartManager.addProduct(cid, pid); // si todo es ok agrego el producto al carrito
-        //console.log(result);
         res.status(200).send({
             status: "success",
             payload: result,
@@ -81,11 +67,11 @@ router.post("/:cid/product/:pid", async (req, res) => {
 router.get("/:cid", async (req, res) => {
     try {
         const { cid } = req.params;
-
-        let cart = await cartManager.getCartById(cid); // busco el carrito por el id pasado
-        if (!cart || cart.status === "error") {
+        const isValidCid = await verifyCid(cid);
+        if (!isValidCid) {
             return res.status(404).send({ status: "error", error: `No existe el carrito id ${cid}` });
-        } // si no lo encuentro devuelvo un 404 con error
+        }
+        let cart = await cartManager.getCartById(cid); // busco el carrito por el id pasado
         return res.status(200).send({
             status: "success",
             payload: cart,
@@ -96,6 +82,140 @@ router.get("/:cid", async (req, res) => {
             error: "Ha ocurrido un error al obtener el carrito",
         });
         return error;
+    }
+});
+
+//DELETE
+
+router.delete("/:cid/product/:pid", async (req, res) => {
+    try {
+        const { cid, pid } = req.params;
+
+        const isValidCid = await verifyCid(cid);
+        if (!isValidCid) {
+            return res.status(404).send({ status: "error", error: `No existe el carrito id ${cid}` });
+        }
+        const isPidValid = await verifyPid(pid); // Verifica si el pid que pasaste existe
+        if (!isPidValid) {
+            return res.status(404).send({
+                status: "error",
+                error: `No existe el producto id ${pid}`,
+            });
+        }
+        const cart = await cartManager.getCartById(cid);
+        const products = cart.product.find((producto) => producto.idProduct._id == pid);
+        if (!products) {
+            return res.status(404).send({
+                status: "error",
+                error: `No existe el producto id ${pid} en el carrito ${cid}`,
+            });
+        }
+        const result = await cartManager.deleteProduct(cid, pid);
+
+        res.status(200).send({
+            status: "success",
+            payload: result,
+        });
+    } catch (error) {
+        res.status(500).send({
+            status: "ERROR",
+            error: "Ha ocurrido un error al borrar  el producto",
+        });
+    }
+});
+
+router.delete("/:cid", async (req, res) => {
+    try {
+        const { cid } = req.params;
+
+        const isValidCid = await verifyCid(cid);
+        if (!isValidCid) {
+            return res.status(404).send({ status: "error", error: `No existe el carrito id ${cid}` });
+        }
+
+        const result = await cartManager.deleteProducts(cid);
+
+        res.status(200).send({
+            status: "success",
+            payload: result,
+        });
+    } catch (error) {
+        res.status(500).send({
+            status: "ERROR",
+            error: "Ha ocurrido un error al borrar  el producto",
+        });
+    }
+});
+
+//PUT
+router.put("/:cid", async (req, res) => {
+    try {
+        const { cid } = req.params;
+        const products = req.body;
+
+        //Verifico que todos los productos pasados en el array sean validos
+        products.forEach(async (product) => {
+            const validPid = await productManager.getProductById(product.idProduct);
+            if (!validPid || validPid.status === "error") {
+                return res.status(404).send({ status: "error", error: `No existe el producto id ${product.idProduct}` });
+            }
+        });
+
+        const isValidCid = await verifyCid(cid);
+        if (!isValidCid) {
+            return res.status(404).send({ status: "error", error: `No existe el carrito id ${cid}` });
+        }
+
+        const result = await cartManager.updateProducts(cid, products);
+
+        res.status(200).send({
+            status: "success",
+            payload: result,
+        });
+    } catch (error) {
+        res.status(500).send({
+            status: "ERROR",
+            error: "Ha ocurrido un error al borrar  el producto",
+        });
+    }
+});
+
+router.put("/:cid/product/:pid", async (req, res) => {
+    try {
+        const { cid, pid } = req.params;
+        const { quantity } = req.body;
+
+        const isValidCid = await verifyCid(cid);
+        if (!isValidCid) {
+            return res.status(404).send({ status: "error", error: `No existe el carrito id ${cid}` });
+        }
+
+        const isPidValid = await verifyPid(pid); // Verifica si el pid que pasaste existe
+        if (!isPidValid) {
+            return res.status(404).send({
+                status: "error",
+                error: `No existe el producto id ${pid}`,
+            });
+        }
+        const cart = await cartManager.getCartById(cid); // Verifico si el cid que paso existe
+        const products = cart.product.find((producto) => producto.idProduct._id == pid);
+        if (!products) {
+            return res.status(404).send({
+                status: "error",
+                error: `No existe el producto id ${pid} en el carrito ${cid}`,
+            });
+        }
+        const result = await cartManager.updateProduct(cid, pid, quantity);
+
+        res.status(200).send({
+            status: "success",
+            payload: result,
+        });
+    } catch (error) {
+        res.status(500).send({
+            status: "ERROR",
+            error: "Ha ocurrido un error al borrar  el producto",
+        });
     }
 });
 

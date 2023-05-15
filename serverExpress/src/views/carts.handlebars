@@ -1,0 +1,14 @@
+<div>
+    <p>CARRITO ID {{id}}</p>
+    <div class="cards">
+    {{#each products}}
+    <div class="cardsItems">
+    <strong>nombre</strong> {{this.idProduct.title}}
+    <strong>descripcion</strong> {{this.idProduct.description}}
+    <strong>code</strong> {{this.idProduct.code}}
+    <strong>precio</strong> {{this.idProduct.price}}
+    <strong>cantidad</strong> {{this.quantity}}
+    </div>
+    {{/each}}
+    </div>
+</div>
