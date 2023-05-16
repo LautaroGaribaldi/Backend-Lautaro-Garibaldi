@@ -26,9 +26,10 @@ router.get("/", async (req, res) => {
         if (req.query.category) {
             query = { ...query, category: req.query.category };
         }
-        if (req.query.status) {
-            query = { ...query, status: req.query.status };
+        if (req.query.availability) {
+            query = { ...query, stock: { $gt: 0 } };
         }
+        console.log(query);
         let data = await productManager.getProducts(limit, page, query, sortType);
 
         if (((!parseInt(limit) && parseInt(limit) !== 0) || parseInt(limit) < 0) && limit !== undefined) {
