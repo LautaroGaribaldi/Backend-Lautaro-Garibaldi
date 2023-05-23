@@ -1,10 +1,11 @@
 const { Router } = require("express"); // Importo Router de express
 const { userModel } = require("../managerDaos/mongo/model/user.model"); // importo mi modelo de objetos
+const { auth } = require("../middlewares/authentication.middleware");
 
 const router = Router();
 
 //GET
-router.get("/", async (req, res) => {
+router.get("/", auth, async (req, res) => {
     try {
         let users = await userModel.find(); // busco todos mis users
         res.send({
@@ -25,6 +26,8 @@ router.post("/", async (req, res) => {
             firstName: user.nombre,
             lastName: user.apellido,
             email: user.email,
+            dateOfBirth: user.dateOfBirth,
+            password: user.password,
         };
         let result = await userModel.create(newUser); // lo creo en mi base de datos
         res.status(200).send({ result }); // devuelvo el resultado.
@@ -45,6 +48,8 @@ router.put("/:uid", async (req, res) => {
             firstName: user.nombre,
             lastName: user.apellido,
             email: user.email,
+            dateOfBirth: user.dateOfBirth,
+            password: user.password,
         };
         let result = await userModel.updateOne({ _id: uid }, userToReplace);
 

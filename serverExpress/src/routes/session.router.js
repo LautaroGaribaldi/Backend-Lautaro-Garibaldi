@@ -5,12 +5,11 @@ const router = Router();
 
 router.get("/counter", (req, res) => {
     if (req.session.counter) {
-        console.log(req.session);
         req.session.counter++;
-        return res.send(`${req.session.user} ah visitado el sitio ${req.session.counter} veces`);
+        return res.send(`Has visitado el sitio ${req.session.counter} veces`);
     } else {
         req.session.counter = 1;
-        return res.send(`Bienvenido ${req.session.user}`);
+        return res.send(`Bienvenido`);
     }
 });
 
@@ -18,15 +17,29 @@ router.get("/privada", auth, (req, res) => {
     res.send("todo lo que esta aca solo lo ve admin logeado");
 });
 
-router.post("/login", (req, res) => {
-    const { userName, password } = req.body;
-    if (userName !== "lautaro" || password !== "prueba123") {
-        return res.send("Usuario y/o contraseña incorrecta");
+router.post("/login", async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        //validar email y password
+        //validar email existente
+        //vamos a tener una funcion para validar password
+        const userDB = await userModel.findOne({ email, password });
+        if (!userDB) return res.send({ status: "error", message: "No existe ese usuario. revisar" });
+        req.session.user = {
+            firstName: userDB.firstName,
+            lastName: userDB.lastName,
+            email: userDB.email,
+        };
+        if (email === "adminCoder@coder.com") {
+            req.session.user.role = "admin";
+        } else {
+            req.session.user.role = "user";
+        }
+        res.redirect("/products");
+        //return res.send({ status: "success", message: "login exitoso", session: req.session.user });
+    } catch (error) {
+        console.log(error);
     }
-    req.session.user = userName;
-    req.session.admin = true;
-    console.log(req.session);
-    return res.send("login exitoso");
 });
 
 router.post("/register", async (req, res) => {
@@ -65,7 +78,8 @@ router.get("/logout", (req, res) => {
         if (err) {
             return res.send({ status: "error", error: err });
         } else {
-            return res.send("logout ok");
+            res.redirect("/login");
+            //return res.send("logout ok");
         }
     });
 });

@@ -24,14 +24,19 @@ router.get("/", async (req, res) => {
 router.get("/products", async (req, res) => {
     try {
         const { page } = req.query;
+        console.log("coco", req.session.user);
         const { payload, hasPrevPage, hasNextPage, prevPage, nextPage, totalPages } = await productManager.getProducts(undefined, page);
         if (page && (page > totalPages || page <= 0 || !parseInt(page))) {
             return res.status(400).send({ status: "error", error: "Pagina inexistente" });
         }
+        const role = req.session.user?.role === "admin" ? true : false;
+        console.log("rol", role);
         const object = {
             style: "index.css",
             title: "Productos",
             products: payload,
+            user: req.session.user,
+            role: role,
             hasPrevPage,
             hasNextPage,
             prevPage,
