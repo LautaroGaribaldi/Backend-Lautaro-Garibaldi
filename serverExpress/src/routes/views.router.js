@@ -72,4 +72,22 @@ router.get("/realTimeProducts", async (req, res) => {
     res.render("realTimeProducts", object);
 });
 
+router.get("/login", async (req, res) => {
+    const object = {
+        style: "index.css",
+        title: "Login",
+        //products: payload,
+    };
+    res.render("login", object);
+});
+
+router.get("/register", async (req, res) => {
+    const object = {
+        style: "index.css",
+        title: "register",
+        //products: payload,
+    };
+    res.render("registerForm", object);
+});
+
 module.exports = router;

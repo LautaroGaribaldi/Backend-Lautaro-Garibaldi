@@ -6,7 +6,6 @@ class ProductManagerMongo {
     async getProducts(limit = 10, page = 1, query = {}, sort = {}) {
         try {
             let products = await productModel.paginate(query, { limit: limit, page: page, sort, lean: true });
-
             const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, totalPages } = products;
             //Verificaciones para saber como armar los links
             if (!query.category) {
@@ -14,10 +13,10 @@ class ProductManagerMongo {
             } else {
                 query.category = `&category=${query.category}`;
             }
-            if (!query.status) {
-                query.status = "";
+            if (!query.stock) {
+                query.stock = "";
             } else {
-                query.status = `&status=${query.status}`;
+                query.stock = `&availability=true`;
             }
             if (!sort.price) {
                 sort.price = "";
@@ -27,10 +26,10 @@ class ProductManagerMongo {
                 sort.price = `&sort=desc`;
             }
             const prevLink = hasPrevPage
-                ? `http://localhost:8080/api/products?page=${prevPage}&limit=${limit}${query.category}${query.status}${sort.price}`
+                ? `http://localhost:8080/api/products?page=${prevPage}&limit=${limit}${query.category}${query.stock}${sort.price}`
                 : null;
             const nextLink = hasNextPage
-                ? `http://localhost:8080/api/products?page=${nextPage}&limit=${limit}${query.category}${query.status}${sort.price}`
+                ? `http://localhost:8080/api/products?page=${nextPage}&limit=${limit}${query.category}${query.stock}${sort.price}`
                 : null;
 
             return {

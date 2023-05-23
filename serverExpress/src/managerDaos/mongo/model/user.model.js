@@ -4,7 +4,10 @@ const collection = "users"; // defino el nombre de mi coleccion
 
 // doy el formato de modelo de mis bojetos a poner en esa coleccion
 const userSchema = new Schema({
-    firstName: String,
+    firstName: {
+        type: String,
+        required: true,
+    },
     lastName: {
         type: String,
         required: true,
@@ -13,6 +16,14 @@ const userSchema = new Schema({
         type: String,
         required: true,
         unique: true,
+    },
+    dateOfBirth: {
+        type: Date,
+        required: true,
+    },
+    password: {
+        type: String,
+        required: true,
     },
 });
 
