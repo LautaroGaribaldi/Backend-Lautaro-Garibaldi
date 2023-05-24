@@ -100,55 +100,6 @@ class ProductManager {
     };
 }
 
-//                                                                  Codigos para probar la clase ProductManager
-
-//const producto = new ProductManager("../archivos/products.json");
-//const testingProductManager = async () => {
-//      console.log(await producto.addProduct({title: 'Computadora Gamer', description: 'Computadora Gamer', price: 250, thumbnail: 'https://www.megatecnologia.com.ar/images/1673361801095.jpg', code: 'AAA001', stock: 25}))
-//      console.log(await producto.addProduct({title: 'Notebook domestica', description: 'Notebook para uso domestico', price: 200, thumbnail: 'https://www.megatecnologia.com.ar/images/1673361801095.jpg', code: 'AAA002', stock: 25}))
-//      console.log(await producto.addProduct({title: 'Nintendo Switch', description: 'Consola Nintendo Switch', price: 350, thumbnail: 'https://www.megatecnologia.com.ar/images/1673361801095.jpg', code: 'AAA003', stock: 25}))
-//      console.log(await producto.addProduct({title: 'Tablet domestica', description: 'Tablet para uso domestico', price: 150, thumbnail: 'https://www.megatecnologia.com.ar/images/1673361801095.jpg', code: 'AAA004', stock: 25}))
-//      console.log(await producto.addProduct({title: 'Notebook gamer', description: 'Notebook gamer', price: 300, thumbnail: 'https://www.megatecnologia.com.ar/images/1673361801095.jpg', code: 'AAA005', stock: 25}))
-//      console.log(await producto.addProduct({title: 'Computadora domestica', description: 'Computadora para uso domestico', price: 200, thumbnail: 'https://www.megatecnologia.com.ar/images/1673361801095.jpg', code: 'AAA006', stock: 25}))
-//      console.log(await producto.addProduct({title: 'Joystick ps4', description: 'Joystick Dual Shock 4 para Ps4', price: 100, thumbnail: 'https://www.megatecnologia.com.ar/images/1673361801095.jpg', code: 'AAA007', stock: 25}))
-//      console.log(await producto.addProduct({title: 'Mouse wirless logitech', description: 'Mouse Wirless marca logitech', price: 50, thumbnail: 'https://www.megatecnologia.com.ar/images/1673361801095.jpg', code: 'AAA008', stock: 25}))
-//      console.log(await producto.addProduct({title: 'Play Station 4', description: 'Consola Play Station 4', price: 300, thumbnail: 'https://www.megatecnologia.com.ar/images/1673361801095.jpg', code: 'AAA009', stock: 25}))
-//      console.log(await producto.addProduct({title: 'Play Station 5', description: 'Consola Play Station 5', price: 450, thumbnail: 'https://www.megatecnologia.com.ar/images/1673361801095.jpg', code: 'AAA010', stock: 25}))
-
-//      console.log(await producto.getProducts())
-//      console.log("Agregado de producto 1")
-//      console.log("------------------------------------------------------------------------------------")
-//      console.log(await producto.addProduct({title: 'Computadora Gamer', description: 'Computadora Gamer', price: 250, thumbnail: 'https://www.megatecnologia.com.ar/images/1673361801095.jpg', code: 'AAA001', stock: 25}))
-//      console.log("Agregado de producto 2")
-//      console.log("------------------------------------------------------------------------------------")
-//      console.log(await producto.addProduct({title: 'Notebook gamer', description: 'Notebook gamer', price: 250, thumbnail: 'https://www.megatecnologia.com.ar/images/1673361801095.jpg', code: 'AAA002', stock: 25}))
-//      console.log("Agregado de producto 3")
-//      console.log("------------------------------------------------------------------------------------")
-//      console.log(await producto.addProduct({title: 'Tablet', description: 'Tablet de uso domestico',price: 250, thumbnail: 'https://www.megatecnologia.com.ar/images/1673361801095.jpg', code: 'AAA003', stock: 50}))
-//      console.log("Agregado de producto igual code")
-//      console.log("------------------------------------------------------------------------------------")
-//      console.log(await producto.addProduct({title: 'Notebook de Trabajo', description: 'Notebook de Trabajo', price: 250, thumbnail: 'https://www.megatecnologia.com.ar/images/1673361801095.jpg', code: 'AAA001', stock: 25}))
-//      console.log("Agregado de producto sin precio")
-//      console.log("------------------------------------------------------------------------------------")
-//      console.log(await producto.addProduct({title: 'Nintendo Switch', description: 'Consola Nintendo Switch', thumbnail: 'https://www.megatecnologia.com.ar/images/1673361801095.jpg', code: 'AAA003', stock: 50}))
-//      console.log("Consultar productos");
-//      console.log("------------------------------------------------------------------------------------");
-//      console.log(await producto.getProducts());
-//      console.log("Updatear producto id 1 (se le aumento el precio)")
-//      console.log("------------------------------------------------------------------------------------")
-//      console.log(await producto.updateProduct(1, {title: 'Computadora Gamer', description: 'Computadora Gamer', price: 300, thumbnail: 'https://www.megatecnologia.com.ar/images/1673361801095.jpg', code: 'AAA001', stock: 50}))
-//      console.log("Borrado de producto id 2")
-//      console.log("------------------------------------------------------------------------------------")
-//      console.log(await producto.deleteProduct(2))
-//      console.log("Consulta de producto por id 2 (producto borrado)")
-//      console.log("------------------------------------------------------------------------------------")
-//      console.table(await producto.getProductById(2))
-//      console.log("Consulta de producto por id 3")
-//      console.log("------------------------------------------------------------------------------------")
-//      console.table(await producto.getProductById(3))
-//      };
-//      testingProductManager();
-
 module.exports = {
     ProductManager,
 };
