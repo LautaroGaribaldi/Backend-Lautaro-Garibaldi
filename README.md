@@ -2,7 +2,7 @@
 
 ---
 
-[![N|Solid](https://miro.medium.com/v2/resize:fit:365/1*Jr3NFSKTfQWRUyjblBSKeg.png)](https://nodesource.com/products/nsolid) [![N|Solid](https://cdn.iconscout.com/icon/free/png-256/free-mongodb-226029.png)](https://nodesource.com/products/nsolid)
+[![N|Solid](https://miro.medium.com/v2/resize:fit:365/1*Jr3NFSKTfQWRUyjblBSKeg.png)](https://nodesource.com/products/nsolid) [![N|Solid](https://wecandonow.com/courses/mongodb/icon.png)](https://nodesource.com/products/nsolid)
 
 ### Descripcion
 
@@ -34,10 +34,36 @@ Una vez levantado el servido con el comando npm run dev puede consultar los sigu
 ##### PUT:
 
 -   http://localhost:8080/api/products/:pid (Modifico un producto buscandolo por pid .)
+-   http://localhost:8080/api/carts/:cid (Modifica el array de productos completo con un nuevo array al carrito pasado por cid.)
+-   http://localhost:8080/api/carts/:cid/product/:pid (Modifica la cantidad del producto pasado por pid en el carrito pasado por cid.)
+-
 
 ##### DELETE:
 
 -   http://localhost:8080/api/products/:pid (Borra el producto buscandolo por pid.)
+-   http://localhost:8080/api/carts/:cid/product/:pid (Borra en el carrito pasado por cid el producto pasado por pid.)
+-   http://localhost:8080/api/carts/:cid (Borra todos los productos del carrito pasado por cid.)
+
+### Middleware
+
+---
+
+-   authentication.middleware.js (Valida si el usuario es admin. Si no es admin redirige al perfil, pero si no esta logeado redirige al login.)
+-   loged.middleware.js (Valida si el usuario esta logeado. Si lo esta redirige a /products.)
+-   notLoged.middleware (Valida si el usuario no esta logeado. Si no esta logeado lo redirige a /login)
+
+### Vistas
+
+---
+
+-   http://localhost:8080/ (Vista de tabla de productos. Si no se ha logeado redirecciona al login)
+-   http://localhost:8080/products (Vista paginada de productos.)
+-   http://localhost:8080/carts/:cid (Vista del carrito pasado por cid. Si no se ha logeado redirecciona al login. Pero si esta logeado y no es admin redirecciona al perfil.)
+-   http://localhost:8080/chat (chat que guarda los mensajes en base de datos. Si no se ha logeado redirecciona al login)
+-   http://localhost:8080/realTimeProducts (Vista de productos con socket io. tiene 2 formularios para borrar y para crear productos. Si no se ha logeado redirecciona al login)
+-   http://localhost:8080/login (Vista de formulario de login. si el login es exitoso redirecciona a products. Si ya esta logeado redirecciona a products)
+-   http://localhost:8080/register (Vista de formulario de register. si el register es exitoso redirecciona a login. Si ya esta logeado redirecciona a products)
+-   http://localhost:8080/profile (Vista de perfil del usuario. si no se ha logeado redirecciona al login)
 
 ### Funcionalidades
 
@@ -62,6 +88,17 @@ Una vez levantado el servido con el comando npm run dev puede consultar los sigu
 -   Funcion addCart que crea un carrito. y lo agrega a mi coleccion.
 -   Funcion addProducts que recibe id de carrito y id de producto por parametro. y agrega al carrito pasado por id el producto pasado por id.
 
+##### Clase UserManagerMongo
+
+---
+
+-   Funcion getUsers la cual devuelve los usuarios guardados.
+-   Funcion getUserByEmail que recibe email como parametro, el cual devuelve un usuario filtrando por email
+-   Funcion getUserByEmailAndPass que recibe email y password como parametro. el cual devuelve un usuario filtrando por email y password.
+-   Funcion addUser que recibe un objeto por parametro y si todos los campos solicitados estan llenos se crea el nuevo usuario.
+-   Funcion updateUser que recibe por parametro id y un objeto. si encuentra el usuario lo modifica por los propiedades y valores pasadas en el objeto.
+-   Funcion deleteUser que recibe por parametro el id. Si encuentra el usuario con el id pasado lo borra de mi coleccion..
+
 ##### Clase MessagesManagerMongo
 
 ---
@@ -74,4 +111,4 @@ Una vez levantado el servido con el comando npm run dev puede consultar los sigu
 ---
 
 Parado en la ruta de app.sj (dentro de la carpeta serverExpress), correr el comando npm run dev
-Luego con Postman o un buscador web vaya a " http://localhost:8080/api/products " para comenzar a probar los endpoints.
+Luego con Postman o un buscador web vaya a " http://localhost:8080/products " para comenzar a probar los endpoints.

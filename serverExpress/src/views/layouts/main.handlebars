@@ -11,12 +11,11 @@
             <ul>
                 {{#unless user}}
                     <li><a href="/login">Login</a></li>
-                {{/unless}}
-                {{#unless user}}
                     <li><a href="/register">Register</a></li>
                 {{/unless}}
                 {{#if user}}
                     <li><a href="/api/session/logout">Logout</a></li>
+                    <li><a href="/profile">Perfil</a></li>
                 {{/if}}
                 <li><a href="/products">Products</a></li>
                 {{#if role}}

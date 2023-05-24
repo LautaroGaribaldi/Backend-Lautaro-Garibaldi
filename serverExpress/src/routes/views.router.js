@@ -5,15 +5,19 @@ const { Router } = require("express"); // Importo Router de express
 //const manager = new ProductManager(path); // Genero mi ProductManager.
 const productManager = require("../managerDaos/mongo/product.mongo.js");
 const cartManager = require("../managerDaos/mongo/cart.mongo");
+const { loged } = require("../middlewares/loged.middleware.js");
+const { notLoged } = require("../middlewares/notLoged.middleware.js");
+const { auth } = require("../middlewares/authentication.middleware.js");
 const router = Router();
 
-router.get("/", async (req, res) => {
+router.get("/", notLoged, async (req, res) => {
     try {
-        const { payload } = await productManager.getProducts();
+        const { payload } = await productManager.getProducts(15);
         console.log(payload);
         const object = {
             style: "index.css",
             title: "Productos",
+            user: req.session.user,
             products: payload,
         };
         res.render("home", object);
@@ -47,13 +51,16 @@ router.get("/products", async (req, res) => {
 });
 
 // vista de carrito
-router.get("/carts/:cid", async (req, res) => {
+router.get("/carts/:cid", notLoged, auth, async (req, res) => {
     try {
         const { cid } = req.params;
+        const role = req.session.user?.role === "admin" ? true : false;
         const cart = await cartManager.getCartById(cid);
         const object = {
             style: "index.css",
             title: "Productos",
+            user: req.session.user,
+            role: role,
             products: cart.product,
             id: cart._id,
         };
@@ -61,23 +68,26 @@ router.get("/carts/:cid", async (req, res) => {
     } catch (error) {}
 });
 
-router.get("/chat", async (req, res) => {
+router.get("/chat", notLoged, async (req, res) => {
     try {
-        res.render("chat", { style: "index.css" });
+        const role = req.session.user?.role === "admin" ? true : false;
+        res.render("chat", { style: "index.css", user: req.session.user, role: role });
     } catch (error) {}
 });
 
-router.get("/realTimeProducts", async (req, res) => {
+router.get("/realTimeProducts", notLoged, async (req, res) => {
     const { payload } = await productManager.getProducts(20);
     const object = {
         style: "index.css",
         title: "Productos en tiempo real",
+        user: req.session.user,
         products: payload,
     };
     res.render("realTimeProducts", object);
 });
 
-router.get("/login", async (req, res) => {
+//Formulario de login
+router.get("/login", loged, async (req, res) => {
     const object = {
         style: "index.css",
         title: "Login",
@@ -86,13 +96,24 @@ router.get("/login", async (req, res) => {
     res.render("login", object);
 });
 
-router.get("/register", async (req, res) => {
+//Formulario de register
+router.get("/register", loged, async (req, res) => {
     const object = {
         style: "index.css",
         title: "register",
-        //products: payload,
+        user: req.session.user,
     };
     res.render("registerForm", object);
+});
+
+//Perfil
+router.get("/profile", notLoged, async (req, res) => {
+    const object = {
+        style: "index.css",
+        title: "Login",
+        user: req.session.user,
+    };
+    res.render("profile", object);
 });
 
 module.exports = router;
