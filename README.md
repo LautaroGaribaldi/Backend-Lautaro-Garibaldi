@@ -2,7 +2,7 @@
 
 ---
 
-[![N|Solid](https://miro.medium.com/v2/resize:fit:365/1*Jr3NFSKTfQWRUyjblBSKeg.png)](https://nodesource.com/products/nsolid) [![N|Solid](https://wecandonow.com/courses/mongodb/icon.png)](https://nodesource.com/products/nsolid)
+[![N|Solid](https://miro.medium.com/v2/resize:fit:365/1*Jr3NFSKTfQWRUyjblBSKeg.png)](https://nodesource.com/products/nsolid) [![N|Solid](https://cdn.iconscout.com/icon/free/png-256/free-mongodb-226029.png)](https://nodesource.com/products/nsolid)
 
 ### Descripcion
 
