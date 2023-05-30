@@ -94,6 +94,15 @@ router.get("/login", loged, async (req, res) => {
     res.render("login", object);
 });
 
+router.get("/recoveryPassword", loged, async (req, res) => {
+    const object = {
+        style: "index.css",
+        title: "Recovery Password",
+        //products: payload,
+    };
+    res.render("recoveryPassword", object);
+});
+
 //Formulario de register
 router.get("/register", loged, async (req, res) => {
     const object = {

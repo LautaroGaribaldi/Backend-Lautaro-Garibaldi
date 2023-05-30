@@ -19,11 +19,14 @@ const userSchema = new Schema({
     },
     dateOfBirth: {
         type: Date,
-        required: true,
+        //required: true,
     },
     password: {
         type: String,
         required: true,
+    },
+    role: {
+        type: String,
     },
 });
 

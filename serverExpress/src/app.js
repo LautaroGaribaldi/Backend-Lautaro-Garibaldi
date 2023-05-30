@@ -10,6 +10,8 @@ const messageManager = require("./managerDaos/mongo/messsage.mongo");
 // guardar en archivos los sessions
 const FileStore = require("session-file-store");
 const { create } = require("connect-mongo");
+const { initPassport, initPassportGithub } = require("./config/passport.config.js");
+const passport = require("passport");
 
 //const path = "./src/archivos/products.json"; // Genero mi path para pasarle a mi clase.
 //const manager = new ProductManager(path); // Genero mi ProductManager.
@@ -60,13 +62,18 @@ app.use(
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
             },
-            ttl: 100000 * 60,
+            ttl: 86400,
         }),
         secret: "secretCoder",
         resave: false,
         saveUninitialized: false,
     })
 );
+
+initPassport();
+initPassportGithub();
+passport.use(passport.initialize());
+passport.use(passport.session());
 
 app.use(routerApp);
 

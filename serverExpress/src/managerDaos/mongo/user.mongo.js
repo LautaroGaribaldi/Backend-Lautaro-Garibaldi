@@ -41,6 +41,14 @@ class UserManagerMongo {
         }
     };
 
+    updateUserByEmail = async (email, userToReplace) => {
+        try {
+            return await userModel.updateOne({ email: email }, userToReplace);
+        } catch (error) {
+            return { status: "error", error: error };
+        }
+    };
+
     deleteUser = async (uid) => {
         try {
             return await userModel.deleteOne({ _id: uid });
