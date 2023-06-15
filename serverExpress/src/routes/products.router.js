@@ -1,10 +1,12 @@
 const { Router } = require("express"); // Importo Router de express
 const productManager = require("../managerDaos/mongo/product.mongo.js");
+//const { authToken } = require("../utils/jwt.js");
+const passport = require("passport");
 
 const router = Router();
 
 // GET
-router.get("/", async (req, res) => {
+router.get("/", passport.authenticate("jwt", { session: false }), async (req, res) => {
     // Endpoint products (mostrar productos con posibilidad de definir limite).
     try {
         let { limit } = req.query; // Destructuracion de el query param para que no me pasan datos que no quiero.

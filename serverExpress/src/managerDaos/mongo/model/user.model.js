@@ -27,7 +27,16 @@ const userSchema = new Schema({
     },
     role: {
         type: String,
+        default: "user",
     },
+    cartId: {
+        type: Schema.Types.ObjectId,
+        ref: "carts",
+    },
+});
+
+userSchema.pre("findOne", function () {
+    this.populate("cartId");
 });
 
 const userModel = model(collection, userSchema); // creo el objeto de modelo

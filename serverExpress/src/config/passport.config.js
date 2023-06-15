@@ -1,4 +1,4 @@
-const passport = require("passport");
+/*const passport = require("passport");
 const local = require("passport-local");
 const GithubStrategy = require("passport-github2");
 const { userModel } = require("../managerDaos/mongo/model/user.model");
@@ -6,7 +6,6 @@ const { createHash, isValidPassword } = require("../utils/bcryptHash");
 require("dotenv").config();
 
 const LocalStrategy = local.Strategy;
-const chorizo = GithubStrategy.Strategy;
 const initPassport = () => {
     //configuracion registro
     passport.use(
@@ -111,3 +110,4 @@ module.exports = {
     initPassport,
     initPassportGithub,
 };
+*/

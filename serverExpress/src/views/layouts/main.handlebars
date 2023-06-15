@@ -9,11 +9,11 @@
     <body>
         <nav>
             <ul>
-                {{#unless user}}
+                {{#unless loged}}
                     <li><a href="/login">Login</a></li>
                     <li><a href="/register">Register</a></li>
                 {{/unless}}
-                {{#if user}}
+                {{#if loged}}
                     <li><a href="/api/session/logout">Logout</a></li>
                     <li><a href="/profile">Perfil</a></li>
                 {{/if}}

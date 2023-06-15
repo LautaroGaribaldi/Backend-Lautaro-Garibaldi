@@ -1,12 +1,15 @@
 const { Router } = require("express"); // Importo Router de express
-const { auth } = require("../middlewares/authentication.middleware");
+//const { auth } = require("../middlewares/authentication.middleware");
 const userManager = require("../managerDaos/mongo/user.mongo.js");
 const { createHash } = require("../utils/bcryptHash");
+const { authorization } = require("../passportJwt/authorizationJwtRole");
+const { passportCall } = require("../passportJwt/passportCall.js");
 
 const router = Router();
 
 //GET
-router.get("/", auth, async (req, res) => {
+//Solo disponible si esta logeado y es admin
+router.get("/", passportCall("jwt"), authorization("admin"), async (req, res) => {
     try {
         let users = await userManager.getUsers(); // busco todos mis users
         res.send({

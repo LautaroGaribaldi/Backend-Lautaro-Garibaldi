@@ -10,7 +10,8 @@ const messageManager = require("./managerDaos/mongo/messsage.mongo");
 // guardar en archivos los sessions
 const FileStore = require("session-file-store");
 const { create } = require("connect-mongo");
-const { initPassport, initPassportGithub } = require("./config/passport.config.js");
+//const { initPassport, initPassportGithub } = require("./config/passport.config.js");
+const { initPassport } = require("./passportJwt/passport.config.js");
 const passport = require("passport");
 
 //const path = "./src/archivos/products.json"; // Genero mi path para pasarle a mi clase.
@@ -54,26 +55,26 @@ app.use("/static", express.static(__dirname + "/public"));
     })
 );*/
 // con mongodb
-app.use(
-    session({
-        store: create({
-            mongoUrl: "mongodb+srv://LautaroGaribaldi:Prueba123@baseprueba.emt7e6n.mongodb.net/ecommerce?retryWrites=true&w=majority",
-            mongoOptions: {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-            },
-            ttl: 86400,
-        }),
-        secret: "secretCoder",
-        resave: false,
-        saveUninitialized: false,
-    })
-);
+// app.use(
+//     session({
+//         store: create({
+//             mongoUrl: "mongodb+srv://LautaroGaribaldi:Prueba123@baseprueba.emt7e6n.mongodb.net/ecommerce?retryWrites=true&w=majority",
+//             mongoOptions: {
+//                 useNewUrlParser: true,
+//                 useUnifiedTopology: true,
+//             },
+//             ttl: 86400,
+//         }),
+//         secret: "secretCoder",
+//         resave: false,
+//         saveUninitialized: false,
+//     })
+// );
 
 initPassport();
-initPassportGithub();
+//initPassportGithub();
 passport.use(passport.initialize());
-passport.use(passport.session());
+//passport.use(passport.session());
 
 app.use(routerApp);
 

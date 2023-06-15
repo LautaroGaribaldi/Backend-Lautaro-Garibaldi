@@ -12,7 +12,7 @@ form.addEventListener("submit", (evt) => {
     data.forEach((value, key) => (obj[key] = value)); // por cada dato extraigo tanto la key como el value
 
     //hago fetch post a mi endpoint pasando por body el bojeto creado
-    fetch("/pruebas/getCookieUser", {
+    fetch("/api/session/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -20,7 +20,10 @@ form.addEventListener("submit", (evt) => {
         body: JSON.stringify(obj),
     })
         .then((respuesta) => respuesta.json())
-        .then((respuesta) => console.log(respuesta));
+        .then((respuesta) => {
+            console.log(respuesta);
+            //localStorage.setItem("token", respuesta.accessToken);
+        });
 });
 
 buttonGet.addEventListener("click", (evt) => {
