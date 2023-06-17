@@ -32,9 +32,9 @@ class RouterClass {
     }
 
     generateCustomResponse = (req, res, next) => {
-        res.sendSuccess = (payload) => res.send({ status: "succcess", payload });
-        res.sendServerError = (error) => res.send({ status: "error", error });
-        res.sendUserError = (error) => res.send({ status: "error", error });
+        res.sendSuccess = (payload) => res.status(200).send({ status: "succcesss", payload });
+        res.sendServerError = (error) => res.status(500).send({ status: "error", error });
+        res.sendUserError = (error) => res.status(401).send({ status: "error", error });
         next();
     };
 
@@ -58,15 +58,15 @@ class RouterClass {
     }
 
     post(path, polices, ...callbacks) {
-        this.router.get(path, this.handlePolicies(polices), this.generateCustomResponse, this.applyCallbacks(callbacks));
+        this.router.post(path, this.handlePolicies(polices), this.generateCustomResponse, this.applyCallbacks(callbacks));
     }
 
     put(path, polices, ...callbacks) {
-        this.router.get(path, this.handlePolicies(polices), this.generateCustomResponse, this.applyCallbacks(callbacks));
+        this.router.put(path, this.handlePolicies(polices), this.generateCustomResponse, this.applyCallbacks(callbacks));
     }
 
     delete(path, polices, ...callbacks) {
-        this.router.get(path, this.handlePolicies(polices), this.generateCustomResponse, this.applyCallbacks(callbacks));
+        this.router.delete(path, this.handlePolicies(polices), this.generateCustomResponse, this.applyCallbacks(callbacks));
     }
 }
 

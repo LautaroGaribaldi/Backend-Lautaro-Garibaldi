@@ -3,7 +3,7 @@ const { productModel } = require("./model/products.models");
 //productModel;
 
 class ProductManagerMongo {
-    async getProducts(limit = 10, page = 1, query = {}, sort = {}) {
+    async getProducts(limit = 10, page = 1, query = {}, sort = { code: 1 }) {
         try {
             let products = await productModel.paginate(query, { limit: limit, page: page, sort, lean: true });
             const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, totalPages } = products;

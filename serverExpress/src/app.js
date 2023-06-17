@@ -101,7 +101,7 @@ io.on("connection", (socket) => {
         }
         if (!id.error) {
             await productManager.deleteProduct(pid.id);
-            const data = await productManager.getProducts();
+            const data = await productManager.getProducts(20);
             return io.emit("newList", data);
         }
     });
@@ -118,7 +118,7 @@ io.on("connection", (socket) => {
             }
             return socket.emit("productAdd", { status: "error", message: msgError });
         }
-        const newData = await productManager.getProducts();
+        const newData = await productManager.getProducts(20);
         return io.emit("productAdd", newData);
     });
 
