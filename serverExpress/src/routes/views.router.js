@@ -15,11 +15,18 @@ class ViewsRouter extends RouterClass {
                 if (req.cookies.coderCookieToken) {
                     loged = true;
                 }
+                const token = req.cookies.coderCookieToken;
+                let tokenUser = "";
+                if (token) {
+                    tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+                }
+                const role = tokenUser.user?.role === "admin" ? true : false;
                 //console.log(payload);
                 const object = {
                     style: "index.css",
                     title: "Productos",
                     loged,
+                    role,
                     products: payload,
                 };
                 res.render("home", object);
@@ -38,14 +45,19 @@ class ViewsRouter extends RouterClass {
                 if (req.cookies.coderCookieToken) {
                     loged = true;
                 }
-                //const role = req.user?.role === "admin" ? true : false;
+                const token = req.cookies.coderCookieToken;
+                let tokenUser = "";
+                if (token) {
+                    tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+                }
+                const role = tokenUser.user?.role === "admin" ? true : false;
                 //console.log("faso", role);
                 const object = {
                     style: "index.css",
                     title: "Productos",
                     products: payload,
                     //user: req.user,
-                    //role: role,
+                    role: role,
                     loged,
                     hasPrevPage,
                     hasNextPage,
@@ -65,11 +77,14 @@ class ViewsRouter extends RouterClass {
                 if (req.cookies.coderCookieToken) {
                     loged = true;
                 }
+                const token = req.cookies.coderCookieToken;
+                let tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+                const role = tokenUser.user?.role === "admin" ? true : false;
                 const object = {
                     style: "index.css",
                     title: "Productos",
                     //user: req.user,
-                    //role: role,
+                    role: role,
                     products: cart.product,
                     id: cart._id,
                     loged,
@@ -84,7 +99,13 @@ class ViewsRouter extends RouterClass {
                 if (req.cookies.coderCookieToken) {
                     loged = true;
                 }
-                res.render("chat", { style: "index.css", loged });
+                const token = req.cookies.coderCookieToken;
+                let tokenUser = "";
+                if (token) {
+                    tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+                }
+                const role = tokenUser.user?.role === "admin" ? true : false;
+                res.render("chat", { style: "index.css", loged, role });
             } catch (error) {}
         });
 
@@ -94,11 +115,18 @@ class ViewsRouter extends RouterClass {
             if (req.cookies.coderCookieToken) {
                 loged = true;
             }
+            const token = req.cookies.coderCookieToken;
+            let tokenUser = "";
+            if (token) {
+                tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+            }
+            const role = tokenUser.user?.role === "admin" ? true : false;
             const object = {
                 style: "index.css",
                 title: "Productos en tiempo real",
                 user: req.user,
                 loged,
+                role,
                 products: payload,
             };
             res.render("realTimeProducts", object);
@@ -136,11 +164,13 @@ class ViewsRouter extends RouterClass {
                 loged = true;
             }
             const token = req.cookies.coderCookieToken;
-            let user = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+            let tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+            const role = tokenUser.user?.role === "admin" ? true : false;
             const object = {
                 style: "index.css",
                 title: "Login",
-                user: user.user, //req.user,
+                user: tokenUser.user, //req.user,
+                role,
                 loged,
             };
             res.render("profile", object);

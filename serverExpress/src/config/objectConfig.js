@@ -1,11 +1,18 @@
 const { connect } = require("mongoose");
+const dotenv = require("dotenv");
+const { commander } = require("../utils/commander");
 
-let url = "mongodb+srv://LautaroGaribaldi:Prueba123@baseprueba.emt7e6n.mongodb.net/ecommerce?retryWrites=true&w=majority"; // url para la conexion de mi base de datos
+const { mode } = commander.opts();
+
+dotenv.config({
+    path: mode === "development" ? "./.env.development" : "./.env.production",
+});
 
 module.exports = {
     // genero la coneccion y muestro un mensaje
+    port: process.env.PORT,
     connectDB: () => {
-        connect(url);
+        connect(process.env.MONGO_URL);
         console.log("Base de datos conectada");
     },
 };

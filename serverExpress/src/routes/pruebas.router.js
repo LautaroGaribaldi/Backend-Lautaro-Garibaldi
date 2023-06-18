@@ -1,7 +1,33 @@
 const { Router } = require("express"); // Importo Router de express
 const { auth } = require("../middlewares/authentication.middleware");
+const { fork } = require("child_process");
 
 const router = Router();
+
+function operacionCompleja() {
+    let result = 0;
+    for (let i = 0; i < 9e9; i++) {
+        result += i;
+    }
+    return result;
+}
+
+router.get("/block", (req, res) => {
+    const result = operacionCompleja();
+    res.send(`El resultado es:  ${result}`);
+});
+
+router.get("/noblock", (req, res) => {
+    const child = fork("./src/utils/operacionCompleja.js");
+    child.send("Inicia el proceso de calculo");
+    child.on("message", (result) => {
+        res.send(`El resultado es:  ${result}`);
+    });
+});
+
+router.get("/suma", (req, res) => {
+    res.send(`Hola mundo`);
+});
 
 router.post("/getCookieUser", (req, res) => {
     const { userName, email } = req.body;

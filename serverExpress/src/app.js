@@ -13,6 +13,7 @@ const { create } = require("connect-mongo");
 //const { initPassport, initPassportGithub } = require("./config/passport.config.js");
 const { initPassport } = require("./passportJwt/passport.config.js");
 const passport = require("passport");
+require("dotenv").config();
 
 //const path = "./src/archivos/products.json"; // Genero mi path para pasarle a mi clase.
 //const manager = new ProductManager(path); // Genero mi ProductManager.
@@ -83,8 +84,9 @@ app.use((err, req, res, next) => {
     res.status(500).send("Algo salio mal.");
 });
 // Implementaicon de Socket.Io
-const httpServer = app.listen(8080, () => {
-    console.log("Escuchando puerto 8080");
+const PORT = process.env.PORT;
+const httpServer = app.listen(PORT, () => {
+    console.log(`Escuchando puerto ${PORT}`);
 });
 
 const io = new Server(httpServer);

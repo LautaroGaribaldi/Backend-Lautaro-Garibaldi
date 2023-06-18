@@ -8,7 +8,7 @@ const ProductRouter = require("./products.router.js");
 const CartRouter = require("./cart.router.js");
 const ViewsRouter = require("./views.router.js");
 const SessionsRouter = require("./session.router.js");
-//const cookieRouter = require("./pruebas.router.js");
+const cookieRouter = require("./pruebas.router.js");
 //const sessionRouter = require("./oldSession.router.js");
 const { uploader } = require("../utils/multer");
 
@@ -20,7 +20,7 @@ const viewRouter = new ViewsRouter();
 const sessionsRouter = new SessionsRouter();
 
 //router.use("/", viewsRouter);
-//router.use("/pruebas", cookieRouter);
+router.use("/pruebas", cookieRouter);
 //router.use("/api/session", sessionRouter);
 //router.use("/api/products", productRouter);
 //router.use("/api/carts", cartRouter);
