@@ -1,8 +1,8 @@
-const cartManager = require("../managerDaos/mongo/cart.mongo");
 const productManager = require("../managerDaos/mongo/product.mongo.js");
+const { cartService } = require("../service");
 
 const verifyCid = async (cid) => {
-    const cart = await cartManager.getCartById(cid);
+    const cart = await cartService.getCartById(cid);
     if (!cart || cart.status === "error") {
         return false;
     }

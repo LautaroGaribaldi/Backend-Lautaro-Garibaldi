@@ -4,9 +4,7 @@ const cookieParser = require("cookie-parser");
 const objectConfig = require("./config/objectConfig.js");
 const routerApp = require("./routes");
 const { Server } = require("socket.io");
-//const { ProductManager } = require("./managerDaos/productManager"); // Imp
-const productManager = require("./managerDaos/mongo/product.mongo.js");
-const messageManager = require("./managerDaos/mongo/messsage.mongo");
+const { productService, messageService } = require("./service/index.js");
 // guardar en archivos los sessions
 const FileStore = require("session-file-store");
 const { create } = require("connect-mongo");
@@ -97,19 +95,19 @@ io.on("connection", (socket) => {
     console.log("Nuevo Cliente Conectado.");
 
     socket.on("productDelete", async (pid) => {
-        const id = await productManager.getProductById(pid.id);
+        const id = await productService.getProductById(pid.id);
         if (!id || id.status === "error") {
             return socket.emit("newList", { status: "error", message: `No se encontro el producto con id ${pid.id}` });
         }
         if (!id.error) {
-            await productManager.deleteProduct(pid.id);
-            const data = await productManager.getProducts(20);
+            await productService.deleteProduct(pid.id);
+            const data = await productService.getProducts(20);
             return io.emit("newList", data);
         }
     });
 
     socket.on("newProduct", async (data) => {
-        let datas = await productManager.addProduct(data);
+        let datas = await productService.addProduct(data);
         if (datas.status === "error") {
             let msgError;
             let error = datas.error;
@@ -120,7 +118,7 @@ io.on("connection", (socket) => {
             }
             return socket.emit("productAdd", { status: "error", message: msgError });
         }
-        const newData = await productManager.getProducts(20);
+        const newData = await productService.getProducts(20);
         return io.emit("productAdd", newData);
     });
 
@@ -129,8 +127,8 @@ io.on("connection", (socket) => {
     });
 
     socket.on("message", async (data) => {
-        let result = await messageManager.addMessage(data);
-        let messagess = await messageManager.getMessages();
+        let result = await messageService.addMessage(data);
+        let messagess = await messageService.getMessages();
         io.emit("messageLogs", messagess);
     });
 });

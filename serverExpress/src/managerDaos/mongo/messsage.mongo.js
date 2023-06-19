@@ -18,4 +18,4 @@ class MessagesManagerMongo {
     };
 }
 
-module.exports = new MessagesManagerMongo();
+module.exports = MessagesManagerMongo;
