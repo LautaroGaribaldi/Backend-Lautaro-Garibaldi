@@ -22,8 +22,8 @@ cartSchema.pre("findOne", function () {
     this.populate("product.idProduct");
 });
 
-const cartModel = model(collection, cartSchema);
+const CartModel = model(collection, cartSchema);
 
 module.exports = {
-    cartModel,
+    CartModel,
 };

@@ -11,7 +11,7 @@ class UserRouter extends RouterClass {
 
         this.post("/", ["PUBLIC"], createUsers);
 
-        this.put("/", ["PUBLIC"], updateUsers);
+        this.put("/:uid", ["PUBLIC"], updateUsers);
 
         this.delete("/:uid", ["PUBLIC"], deleteUsers);
     }

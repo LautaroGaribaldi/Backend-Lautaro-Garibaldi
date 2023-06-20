@@ -43,7 +43,6 @@ router.get(
                 loged = true;
             }
             //const role = req.user?.role === "admin" ? true : false;
-            //console.log("faso", role);
             const object = {
                 style: "index.css",
                 title: "Productos",

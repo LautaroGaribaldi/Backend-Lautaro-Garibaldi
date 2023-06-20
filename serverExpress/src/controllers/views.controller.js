@@ -50,7 +50,6 @@ class viewsController {
                 tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
             }
             const role = tokenUser.user?.role === "admin" ? true : false;
-            //console.log("faso", role);
             const object = {
                 style: "index.css",
                 title: "Productos",

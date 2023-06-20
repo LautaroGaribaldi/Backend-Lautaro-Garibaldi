@@ -39,8 +39,8 @@ userSchema.pre("findOne", function () {
     this.populate("cartId");
 });
 
-const userModel = model(collection, userSchema); // creo el objeto de modelo
+const UserModel = model(collection, userSchema); // creo el objeto de modelo
 
 module.exports = {
-    userModel,
+    UserModel,
 };

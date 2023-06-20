@@ -1,9 +1,12 @@
-const { messageModel } = require("./model/chat.models.js");
+const { MessageModel } = require("./model/chat.models.js");
 
 class MessagesManagerMongo {
+    constructor() {
+        this.messageModel = MessageModel;
+    }
     getMessages = async () => {
         try {
-            return messageModel.find();
+            return this.messageModel.find();
         } catch (error) {
             return { status: "error", error: error };
         }
@@ -11,7 +14,7 @@ class MessagesManagerMongo {
 
     addMessage = async (newMessage) => {
         try {
-            return messageModel.create(newMessage);
+            return this.messageModel.create(newMessage);
         } catch (error) {
             return { status: "error", error: error };
         }

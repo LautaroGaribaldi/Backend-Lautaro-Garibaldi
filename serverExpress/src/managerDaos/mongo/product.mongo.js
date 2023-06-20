@@ -1,11 +1,14 @@
-const { productModel } = require("./model/products.models");
+const { ProductModel } = require("./model/products.models");
 
 //productModel;
 
 class ProductManagerMongo {
+    constructor() {
+        this.productModel = ProductModel;
+    }
     async getProducts(limit = 10, page = 1, query = {}, sort = { code: 1 }) {
         try {
-            let products = await productModel.paginate(query, { limit: limit, page: page, sort, lean: true });
+            let products = await this.productModel.paginate(query, { limit: limit, page: page, sort, lean: true });
             const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, totalPages } = products;
             //Verificaciones para saber como armar los links
             if (!query.category) {
@@ -50,28 +53,28 @@ class ProductManagerMongo {
     }
     async getProductById(pid) {
         try {
-            return await productModel.findOne({ _id: pid });
+            return await this.productModel.findOne({ _id: pid });
         } catch (error) {
             return { status: "error", error: error };
         }
     }
     async addProduct(newProduct) {
         try {
-            return await productModel.create(newProduct);
+            return await this.productModel.create(newProduct);
         } catch (error) {
             return { status: "error", error: error };
         }
     }
     async updateProduct(pid, productEdit) {
         try {
-            return await productModel.updateOne({ _id: pid }, productEdit);
+            return await this.productModel.updateOne({ _id: pid }, productEdit);
         } catch (error) {
             return { status: "error", error: error };
         }
     }
     async deleteProduct(pid) {
         try {
-            return await productModel.deleteOne({ _id: pid });
+            return await this.productModel.deleteOne({ _id: pid });
         } catch (error) {
             return { status: "error", error: error };
         }

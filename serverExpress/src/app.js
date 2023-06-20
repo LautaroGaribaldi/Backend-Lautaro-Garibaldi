@@ -12,6 +12,7 @@ const { create } = require("connect-mongo");
 const { initPassport } = require("./passportJwt/passport.config.js");
 const passport = require("passport");
 require("dotenv").config();
+const cors = require("cors");
 
 //const path = "./src/archivos/products.json"; // Genero mi path para pasarle a mi clase.
 //const manager = new ProductManager(path); // Genero mi ProductManager.
@@ -26,6 +27,7 @@ app.set("view engine", "handlebars");
 // handelbars prueba
 
 app.use(express.json());
+app.use(cors());
 app.use(express.urlencoded({ extended: true })); // Configuro mi servidor para que reciba  datos complejos por url.
 app.use(cookieParser("Palabr4S3cret4"));
 app.use("/static", express.static(__dirname + "/public"));
@@ -89,7 +91,7 @@ const httpServer = app.listen(PORT, () => {
 
 const io = new Server(httpServer);
 
-objectConfig.connectDB();
+objectConfig.connectDB(); //una instancia de nuestra base de datos
 
 io.on("connection", (socket) => {
     console.log("Nuevo Cliente Conectado.");

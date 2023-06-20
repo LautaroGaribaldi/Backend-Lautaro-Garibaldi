@@ -212,7 +212,6 @@ router.post("/login", async (req, res) => {
 
 router.post("/register", async (req, res) => {
     try {
-        //console.log("elbody", req.body);
         const { firstName, lastName, email, dateOfBirth, password } = req.body;
 
         // validar si existe ya el email

@@ -1,6 +1,7 @@
 const { connect } = require("mongoose");
 const dotenv = require("dotenv");
 const { commander } = require("../utils/commander");
+const { MongoSingleton } = require("../utils/singleton");
 
 const { mode } = commander.opts();
 
@@ -11,8 +12,9 @@ dotenv.config({
 module.exports = {
     // genero la coneccion y muestro un mensaje
     port: process.env.PORT,
-    connectDB: () => {
+    /*connectDB: () => {
         connect(process.env.MONGO_URL);
         console.log("Base de datos conectada");
-    },
+    },*/
+    connectDB: async () => await MongoSingleton.getInstance(),
 };

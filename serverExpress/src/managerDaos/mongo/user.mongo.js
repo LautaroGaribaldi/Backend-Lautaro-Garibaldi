@@ -1,17 +1,24 @@
-const { userModel } = require("./model/user.model");
+const { UserModel } = require("./model/user.model");
 
 class UserManagerMongo {
+    constructor() {
+        this.userModel = UserModel;
+    }
     getUsers = async () => {
         try {
-            return await userModel.find();
+            return await this.userModel.find();
         } catch (error) {
             return { status: "error", error: error };
         }
     };
 
+    getUserById = async (uid) => {
+        return await this.userModel.findOne({ _id: uid });
+    };
+
     getUserByEmail = async (email) => {
         try {
-            return await userModel.findOne({ email: email });
+            return await this.userModel.findOne({ email: email });
         } catch (error) {
             return { status: "error", error: error };
         }
@@ -19,7 +26,7 @@ class UserManagerMongo {
 
     getUserByEmailAndPass = async (email, password) => {
         try {
-            return await userModel.findOne({ email: email, password: password });
+            return await this.userModel.findOne({ email: email, password: password });
         } catch (error) {
             return { status: "error", error: error };
         }
@@ -27,7 +34,7 @@ class UserManagerMongo {
 
     addUser = async (newUser) => {
         try {
-            return await userModel.create(newUser);
+            return await this.userModel.create(newUser);
         } catch (error) {
             return { status: "error", error: error };
         }
@@ -35,7 +42,7 @@ class UserManagerMongo {
 
     updateUser = async (uid, userToReplace) => {
         try {
-            return await userModel.updateOne({ _id: uid }, userToReplace);
+            return await this.userModel.updateOne({ _id: uid }, userToReplace);
         } catch (error) {
             return { status: "error", error: error };
         }
@@ -43,7 +50,7 @@ class UserManagerMongo {
 
     updateUserByEmail = async (email, userToReplace) => {
         try {
-            return await userModel.updateOne({ email: email }, userToReplace);
+            return await this.userModel.updateOne({ email: email }, userToReplace);
         } catch (error) {
             return { status: "error", error: error };
         }
@@ -51,7 +58,7 @@ class UserManagerMongo {
 
     deleteUser = async (uid) => {
         try {
-            return await userModel.deleteOne({ _id: uid });
+            return await this.userModel.deleteOne({ _id: uid });
         } catch (error) {
             return { status: "error", error: error };
         }

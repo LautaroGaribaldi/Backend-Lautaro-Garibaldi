@@ -38,18 +38,18 @@ class UserController {
     //PUT
     updateUsers = async (req, res) => {
         try {
-            //const { email } = req.params;
+            const { uid } = req.params;
             const user = req.body;
 
             let userToReplace = {
-                firstName: user.nombre,
-                lastName: user.apellido,
+                firstName: user.firstName,
+                lastName: user.lastName,
                 email: user.email,
                 dateOfBirth: user.dateOfBirth,
                 password: user.password ? createHash(user.password) : undefined,
             };
 
-            let result = await userService.updateUserByEmail(user.email, userToReplace);
+            let result = await userService.updateUser(uid, userToReplace);
             if (result.status === "error" || result.modifiedCount == 0) {
                 return res.sendServerError("Email vacio o no valido.");
             }
