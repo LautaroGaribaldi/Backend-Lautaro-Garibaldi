@@ -1,6 +1,6 @@
 const { UserModel } = require("./model/user.model");
 
-class UserManagerMongo {
+class UserDaoMongo {
     constructor() {
         this.userModel = UserModel;
     }
@@ -32,7 +32,7 @@ class UserManagerMongo {
         }
     };
 
-    addUser = async (newUser) => {
+    createUser = async (newUser) => {
         try {
             return await this.userModel.create(newUser);
         } catch (error) {
@@ -65,4 +65,4 @@ class UserManagerMongo {
     };
 }
 
-module.exports = UserManagerMongo;
+module.exports = UserDaoMongo;

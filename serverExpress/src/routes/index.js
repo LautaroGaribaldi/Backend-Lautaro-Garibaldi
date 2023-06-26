@@ -4,6 +4,7 @@ const ProductRouter = require("./products.router.js");
 const CartRouter = require("./cart.router.js");
 const ViewsRouter = require("./views.router.js");
 const SessionsRouter = require("./session.router.js");
+const ContactsRouter = require("./contacts.router.js");
 const cookieRouter = require("./pruebas.router.js");
 const { uploader } = require("../utils/multer");
 
@@ -20,6 +21,7 @@ router.use("/api/products", productsRouter.getRouter());
 router.use("/api/carts", cartsRouter.getRouter());
 router.use("/", viewRouter.getRouter());
 router.use("/api/session", sessionsRouter.getRouter());
+router.use("/api/contacts", ContactsRouter);
 
 router.post("/single", uploader.single("myfile"), async (req, res) => {
     res.status(200).send({

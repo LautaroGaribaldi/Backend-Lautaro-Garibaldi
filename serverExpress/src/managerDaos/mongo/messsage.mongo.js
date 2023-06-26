@@ -1,6 +1,6 @@
 const { MessageModel } = require("./model/chat.models.js");
 
-class MessagesManagerMongo {
+class MessagesDaoMongo {
     constructor() {
         this.messageModel = MessageModel;
     }
@@ -21,4 +21,4 @@ class MessagesManagerMongo {
     };
 }
 
-module.exports = MessagesManagerMongo;
+module.exports = MessagesDaoMongo;

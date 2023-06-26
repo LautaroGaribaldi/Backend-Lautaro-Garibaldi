@@ -51,7 +51,7 @@ class ProductControler {
         try {
             const { pid } = req.params;
 
-            let data = await productService.getProductById(pid);
+            let data = await productService.getProduct(pid);
             if (!data || data.status === "error") return res.status(404).send({ status: "ERROR", error: "Not found" }); // si no lo encuentro devuelvo un 404 con error
             return res.sendSuccess(data);
             /*return res.status(200).send({
@@ -70,7 +70,7 @@ class ProductControler {
     createProduct = async (req, res) => {
         try {
             let product = await req.body;
-            let data = await productService.addProduct(product);
+            let data = await productService.createProduct(product);
             //console.log(data);
             if (data.status === "error") {
                 return res.status(404).send({

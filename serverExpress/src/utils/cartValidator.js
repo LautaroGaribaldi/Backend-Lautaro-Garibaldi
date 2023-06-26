@@ -1,5 +1,5 @@
 const productManager = require("../managerDaos/mongo/product.mongo.js");
-const { cartService } = require("../service");
+const { cartService, productService } = require("../service");
 
 const verifyCid = async (cid) => {
     const cart = await cartService.getCartById(cid);
@@ -10,7 +10,7 @@ const verifyCid = async (cid) => {
 };
 
 const verifyPid = async (pid) => {
-    const product = await productManager.getProductById(pid);
+    const product = await productService.getProduct(pid);
     if (!product || product.status === "error") {
         return false;
     }

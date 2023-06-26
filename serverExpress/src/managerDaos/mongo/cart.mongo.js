@@ -1,6 +1,6 @@
 const { CartModel } = require("./model/carts.models.js");
 
-class CartManagerMongo {
+class CartDaoMongo {
     constructor() {
         this.cartModel = CartModel;
     }
@@ -18,7 +18,7 @@ class CartManagerMongo {
             return { status: "error", error: error };
         }
     };
-    addCart = async () => {
+    createCart = async () => {
         try {
             return await this.cartModel.create({});
         } catch (error) {
@@ -73,4 +73,4 @@ class CartManagerMongo {
     };
 }
 
-module.exports = CartManagerMongo;
+module.exports = CartDaoMongo;

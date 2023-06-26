@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-class CartManager {
+class CartDaoFile {
     constructor(path) {
         this.carts = [];
         this.path = path;
@@ -28,7 +28,7 @@ class CartManager {
             console.log(error);
         }
     };
-    addCart = async (cart) => {
+    createCart = async (cart) => {
         try {
             await this.getCarts(); // leo mis carritos
             this.carts.push(cart); //pusheo mi carrito
@@ -58,17 +58,14 @@ class CartManager {
             return error;
         }
     };
+
+    deleteProducts = () => {};
+
+    deleteProduct = () => {};
+
+    updateProducts = () => {};
+
+    updateProduct = () => {};
 }
 
-// const cartManager = new CartManager("../archivos/carts.json");
-
-// const testingProductManager = async () => {
-//     console.log(await cartManager.getCartById(4));
-//     //console.log(await cartManager.addCart({ id: 4, products: [] }));
-//     //console.log(await cartManager.addProduct(4, 3));
-// };
-// testingProductManager();
-
-module.exports = {
-    CartManager,
-};
+module.exports = CartDaoFile;

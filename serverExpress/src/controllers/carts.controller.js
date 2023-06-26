@@ -6,7 +6,7 @@ const { verifyCid, verifyPid } = require("../utils/cartValidator.js");
 class cartController {
     createCart = async (req, res) => {
         try {
-            let result = await cartService.addCart(); //Creo mi carrito
+            let result = await cartService.createCart(); //Creo mi carrito
 
             // si dio error muestro el error
             if (!result || result.status === "error") {
@@ -146,8 +146,9 @@ class cartController {
             const products = req.body;
 
             //Verifico que todos los productos pasados en el array sean validos
+            //formato (array de objetos[{idProduct,quantity}])
             products.forEach(async (product) => {
-                const validPid = await productService.getProductById(product.idProduct);
+                const validPid = await productService.getProduct(product.idProduct);
                 if (!validPid || validPid.status === "error") {
                     return res.status(404).send({ status: "error", error: `No existe el producto id ${product.idProduct}` });
                 }

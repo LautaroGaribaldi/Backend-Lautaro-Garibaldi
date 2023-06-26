@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-class ProductManager {
+class ProductDaoFile {
     constructor(path) {
         this.products = [];
         this.path = path;
@@ -29,7 +29,7 @@ class ProductManager {
         }
     };
 
-    addProduct = async (product) => {
+    createProduct = async (product) => {
         try {
             await this.getProducts(); // leo mis productos
             let codProd = this.products.find((prod) => prod.code === product.code);
@@ -100,6 +100,4 @@ class ProductManager {
     };
 }
 
-module.exports = {
-    ProductManager,
-};
+module.exports = ProductDaoFile;

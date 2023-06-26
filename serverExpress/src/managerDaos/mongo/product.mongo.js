@@ -2,7 +2,7 @@ const { ProductModel } = require("./model/products.models");
 
 //productModel;
 
-class ProductManagerMongo {
+class ProductDaoMongo {
     constructor() {
         this.productModel = ProductModel;
     }
@@ -58,7 +58,7 @@ class ProductManagerMongo {
             return { status: "error", error: error };
         }
     }
-    async addProduct(newProduct) {
+    async createProduct(newProduct) {
         try {
             return await this.productModel.create(newProduct);
         } catch (error) {
@@ -81,4 +81,4 @@ class ProductManagerMongo {
     }
 }
 
-module.exports = ProductManagerMongo;
+module.exports = ProductDaoMongo;

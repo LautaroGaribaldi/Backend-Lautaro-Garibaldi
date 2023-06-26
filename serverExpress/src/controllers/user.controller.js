@@ -1,4 +1,4 @@
-//const UserManagerMongo = require("../managerDaos/mongo/user.mongo.js");
+//const UserDaoMongo = require("../managerDaos/mongo/user.mongo.js");
 const { userService } = require("../service/index.js");
 const { createHash } = require("../utils/bcryptHash");
 
@@ -26,7 +26,7 @@ class UserController {
                 dateOfBirth: user.dateOfBirth,
                 password: createHash(user.password),
             };
-            let result = await userService.addUser(newUser); // lo creo en mi base de datos
+            let result = await userService.createUser(newUser); // lo creo en mi base de datos
             //res.status(200).send({ result }); // devuelvo el resultado.
             res.sendSuccess(result);
         } catch (error) {
@@ -71,10 +71,6 @@ class UserController {
 
             let result = await userService.deleteUser(uid);
 
-            /*res.status(200).send({
-            status: "success",
-            payload: result,
-        });*/
             res.sendSuccess(result);
         } catch (error) {
             res.sendServerError(error);

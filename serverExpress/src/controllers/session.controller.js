@@ -5,8 +5,8 @@ const { generateToken } = require("../utils/jwt.js");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 //const { notLoged } = require("../middlewares/notLoged.middleware.js");
-//const UserManagerMongo = require("../managerDaos/mongo/user.mongo.js"); //manager de usuarios
-//const userManager = new UserManagerMongo();
+//const UserDaoMongo = require("../managerDaos/mongo/user.mongo.js"); //manager de usuarios
+//const userManager = new UserDaoMongo();
 
 class sessionControler {
     privatePage = (req, res) => {
@@ -94,7 +94,7 @@ class sessionControler {
                 return res.send({ status: "error", message: "el email ya fue utilizado" });
             }
 
-            let newCart = await cartService.addCart();
+            let newCart = await cartService.createCart();
 
             //console.log("carritoNuevo", newCart);
 
@@ -108,7 +108,7 @@ class sessionControler {
                 role: req.body.admin ? "admin" : "user",
             };
 
-            let resultUser = await userService.addUser(newUser);
+            let resultUser = await userService.createUser(newUser);
             if (resultUser.ERROR) {
                 return res.status(200).send({ status: "Error", message: "Algun campo esta vacio" });
             }

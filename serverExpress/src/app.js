@@ -97,7 +97,7 @@ io.on("connection", (socket) => {
     console.log("Nuevo Cliente Conectado.");
 
     socket.on("productDelete", async (pid) => {
-        const id = await productService.getProductById(pid.id);
+        const id = await productService.getProduct(pid.id);
         if (!id || id.status === "error") {
             return socket.emit("newList", { status: "error", message: `No se encontro el producto con id ${pid.id}` });
         }
@@ -109,7 +109,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("newProduct", async (data) => {
-        let datas = await productService.addProduct(data);
+        let datas = await productService.createProduct(data);
         if (datas.status === "error") {
             let msgError;
             let error = datas.error;

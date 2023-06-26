@@ -1,5 +1,5 @@
 const RouterClass = require("./RouterClass.js");
-//const UserManagerMongo = require("../managerDaos/mongo/user.mongo.js"); //manager de usuarios
+//const UserDaoMongo = require("../managerDaos/mongo/user.mongo.js"); //manager de usuarios
 //const { createHash, isValidPassword } = require("../utils/bcryptHash.js");
 //const cartMongo = require("../managerDaos/mongo/cart.mongo.js");
 const passport = require("passport");
@@ -13,7 +13,7 @@ class SessionsRouter extends RouterClass {
     init() {
         this.get("/privada", ["ADMIN"], privatePage);
 
-        this.post("/restaurarPass", ["PUBLIC"], recoveryPass);
+        this.post("/recoveryPassword", ["PUBLIC"], recoveryPass);
 
         this.get("/github", ["PUBLIC"], passport.authenticate("github", { scope: ["user:email"] }));
 
