@@ -257,7 +257,7 @@ class cartController {
                     purchaser: tokenUser.user.email,
                 };
                 const createdTicket = await cartService.generateTicket(ticket);
-                //await cartService.updateProducts(cid, productsUnavailable);
+                await cartService.updateProducts(cid, productsUnavailable);
 
                 if (productsUnavailable.length > 0) {
                     return res.status(201).send({

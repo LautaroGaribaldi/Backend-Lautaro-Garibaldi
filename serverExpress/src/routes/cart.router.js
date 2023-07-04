@@ -19,7 +19,7 @@ class CartsRouter extends RouterClass {
 
         this.post("/:cid/product/:pid", ["USER"], addProduct);
 
-        this.post("/:cid/purchase/", ["USER"], purchase);
+        this.get("/:cid/purchase/", ["USER"], purchase);
 
         this.get("/:cid", ["USER", "ADMIN"], getCart);
 
