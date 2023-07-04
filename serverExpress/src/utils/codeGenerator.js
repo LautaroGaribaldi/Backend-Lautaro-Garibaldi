@@ -1,0 +1,10 @@
+function codeGenerator() {
+    const date = Date.now().toString(); // Obtener la marca de tiempo actual
+    const prefijo = "LW-";
+
+    return prefijo + date;
+}
+
+module.exports = {
+    codeGenerator,
+};

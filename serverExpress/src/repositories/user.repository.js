@@ -1,3 +1,5 @@
+const { UsersDto } = require("../dto/users.dto");
+
 class UserRepository {
     constructor(dao) {
         this.dao = dao;
@@ -5,7 +7,9 @@ class UserRepository {
 
     getUsers = async () => {
         let result = await this.dao.getUsers();
-        return result;
+        let userDto = new UsersDto(result);
+        let users = userDto.getUsers();
+        return users;
     };
 
     getUserById = async (uid) => {

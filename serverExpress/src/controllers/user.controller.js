@@ -1,6 +1,8 @@
 //const UserDaoMongo = require("../managerDaos/mongo/user.mongo.js");
 const { userService } = require("../service/index.js");
 const { createHash } = require("../utils/bcryptHash");
+const { sendMail } = require("../utils/sendMail.js");
+const { sendSms, sendWhatsapp } = require("../utils/sendSms.js");
 
 class UserController {
     //GET
@@ -8,6 +10,30 @@ class UserController {
         try {
             let users = await userService.getUsers(); // busco todos mis users
             res.sendSuccess(users);
+        } catch (error) {
+            console.log(error);
+            res.sendServerError(error);
+        }
+    };
+
+    sendEmail = async (req, res) => {
+        try {
+            let html = `<div>
+            <h1>Prueba de envio de mail por servidor </h1>
+            </div>`;
+            let result = await sendMail("lautaro.garibaldi@gmail.com", "prueba abstraccion mail", html);
+            res.sendSuccess("email Enviado");
+        } catch (error) {
+            console.log(error);
+            res.sendServerError(error);
+        }
+    };
+
+    sendSms = async (req, res) => {
+        try {
+            await sendSms();
+            //await sendWhatsapp();
+            res.sendSuccess("sms Enviado");
         } catch (error) {
             console.log(error);
             res.sendServerError(error);

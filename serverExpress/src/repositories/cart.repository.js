@@ -42,6 +42,10 @@ class CartRepository {
         let result = this.dao.updateProduct(cid, pid, quantity);
         return result;
     };
+    generateTicket = (ticket) => {
+        let result = this.dao.generateTicket(ticket);
+        return result;
+    };
 }
 
 module.exports = CartRepository;

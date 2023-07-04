@@ -2,6 +2,9 @@
 //const productManager = require("../managerDaos/mongo/product.mongo.js");
 const { cartService, productService } = require("../service/index.js");
 const { verifyCid, verifyPid } = require("../utils/cartValidator.js");
+const jwt = require("jsonwebtoken");
+const { codeGenerator } = require("../utils/codeGenerator.js");
+require("dotenv").config();
 
 class cartController {
     createCart = async (req, res) => {
@@ -208,6 +211,73 @@ class cartController {
             res.status(500).send({
                 status: "ERROR",
                 error: "Ha ocurrido un error al borrar  el producto",
+            });
+        }
+    };
+
+    purchase = async (req, res) => {
+        try {
+            const { cid } = req.params;
+            const token = req.cookies.coderCookieToken;
+            let tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+
+            const isValidCid = await verifyCid(cid);
+            if (!isValidCid) {
+                return res.status(404).send({ status: "error", error: `No existe el carrito id ${cid}` });
+            }
+
+            let cart = await cartService.getCartById(cid);
+            let productsUnavailable = []; //Aux para ingresar productos sin stock
+
+            if (cart.product.length == 0) {
+                return res.status(404).send({ status: "error", error: `No hay productos el carrito id ${cid}` }); // Verifico que el carrito no este vacio.
+            }
+            // Verifico si tengo stock necesario para cubrir la venta. luego si es asi hago el descuento de stock sino paso los productos a el aux de no disponibles
+            for (const item of cart.product) {
+                let stock = item.idProduct.stock;
+                let pid = item.idProduct._id;
+                if (stock >= item.quantity) {
+                    item.idProduct.stock -= item.quantity;
+                    await productService.updateProduct(pid, item.idProduct);
+                } else {
+                    productsUnavailable.push(item);
+                }
+            }
+            // Filtro mi carrito los productos que puse en el array aux de no disponibles.
+            const purchasedProducts = cart.product.filter((item) => !productsUnavailable.some((p) => p.idProduct._id === item.idProduct._id));
+
+            if (purchasedProducts.length > 0) {
+                //Generacion de ticket
+                const ticket = {
+                    code: codeGenerator(),
+                    purchaseDateTime: new Date(),
+                    amount: purchasedProducts.reduce((total, item) => total + item.quantity * item.idProduct.price, 0),
+                    purchaser: tokenUser.user.email,
+                };
+                const createdTicket = await cartService.generateTicket(ticket);
+                await cartService.updateProducts(cid, productsUnavailable);
+
+                if (productsUnavailable.length > 0) {
+                    return res.status(201).send({
+                        status: "success",
+                        message: "Compra exitosa. algunos producto no tienen stock. revisar carrito!",
+                        ticket: createdTicket,
+                        productsUnavailable,
+                    });
+                } else {
+                    return res.status(201).send({
+                        status: "success",
+                        message: "Compra exitosa.",
+                        ticket: createdTicket,
+                    });
+                }
+            } else {
+                return res.status(404).send({ status: "error", error: `Productos sin stock`, productsUnavailable });
+            }
+        } catch (error) {
+            res.status(500).send({
+                status: "ERROR",
+                error: "Ha ocurrido un error al realizar la compra",
             });
         }
     };

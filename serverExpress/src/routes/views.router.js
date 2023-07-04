@@ -15,7 +15,7 @@ class ViewsRouter extends RouterClass {
 
         this.get("/carts/:cid", ["ADMIN"], carts);
 
-        this.get("/chat", ["PUBLIC"], chat);
+        this.get("/chat", ["USER"], chat);
 
         this.get("/realTimeProducts", ["ADMIN"], realTimeProducts);
 

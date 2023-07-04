@@ -2,23 +2,34 @@ const RouterClass = require("./RouterClass.js");
 //const cartManager = require("../managerDaos/mongo/cart.mongo.js");
 //const productManager = require("../managerDaos/mongo/product.mongo.js");
 //const { verifyCid, verifyPid } = require("../utils/cartValidator.js"); // funciones de validacion extraidas
-const { createCart, addProduct, getCart, deleteProduct, emptyCart, updateProducts, updateProduct } = require("../controllers/carts.controller.js");
+const {
+    createCart,
+    addProduct,
+    getCart,
+    deleteProduct,
+    emptyCart,
+    updateProducts,
+    updateProduct,
+    purchase,
+} = require("../controllers/carts.controller.js");
 
 class CartsRouter extends RouterClass {
     init() {
         this.post("/", ["PUBLIC"], createCart);
 
-        this.post("/:cid/product/:pid", ["PUBLIC"], addProduct);
+        this.post("/:cid/product/:pid", ["USER"], addProduct);
 
-        this.get("/:cid", ["PUBLIC"], getCart);
+        this.post("/:cid/purchase/", ["USER"], purchase);
 
-        this.delete("/:cid/product/:pid", ["PUBLIC"], deleteProduct);
+        this.get("/:cid", ["USER"], getCart);
 
-        this.delete("/:cid", ["PUBLIC"], emptyCart);
+        this.delete("/:cid/product/:pid", ["USER"], deleteProduct);
 
-        this.put("/:cid", ["PUBLIC"], updateProducts);
+        this.delete("/:cid", ["USER"], emptyCart);
 
-        this.put("/:cid/product/:pid", ["PUBLIC"], updateProduct);
+        this.put("/:cid", ["USER"], updateProducts);
+
+        this.put("/:cid/product/:pid", ["USER"], updateProduct);
     }
 }
 

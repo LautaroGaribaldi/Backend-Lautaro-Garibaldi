@@ -3,11 +3,15 @@
 const RouterClass = require("./RouterClass.js");
 //const userManager = require("../managerDaos/mongo/user.mongo.js");
 //const { createHash } = require("../utils/bcryptHash.js");
-const { getUsers, createUsers, updateUsers, deleteUsers } = require("../controllers/user.controller.js");
+const { getUsers, createUsers, updateUsers, deleteUsers, sendEmail, sendSms } = require("../controllers/user.controller.js");
 
 class UserRouter extends RouterClass {
     init() {
         this.get("/", ["ADMIN"], getUsers);
+
+        this.get("/sendEmail", ["PUBLIC"], sendEmail);
+
+        this.get("/sendSms", ["PUBLIC"], sendSms);
 
         this.post("/", ["PUBLIC"], createUsers);
 
