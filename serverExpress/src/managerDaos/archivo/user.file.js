@@ -14,6 +14,8 @@ class UserDaoFile {
 
     getUserByEmailAndPass = () => {};
 
+    createUser = () => {};
+
     updateUser = () => {};
 
     updateUserByEmail = () => {};

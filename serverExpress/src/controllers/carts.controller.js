@@ -233,29 +233,31 @@ class cartController {
                 return res.status(404).send({ status: "error", error: `No hay productos el carrito id ${cid}` }); // Verifico que el carrito no este vacio.
             }
             // Verifico si tengo stock necesario para cubrir la venta. luego si es asi hago el descuento de stock sino paso los productos a el aux de no disponibles
-            for (const item of cart.product) {
-                let stock = item.idProduct.stock;
-                let pid = item.idProduct._id;
-                if (stock >= item.quantity) {
-                    item.idProduct.stock -= item.quantity;
-                    await productService.updateProduct(pid, item.idProduct);
+            for (const product of cart.product) {
+                let stock = product.idProduct.stock;
+                let pid = product.idProduct._id;
+                if (stock >= product.quantity) {
+                    product.idProduct.stock -= product.quantity;
+                    await productService.updateProduct(pid, product.idProduct);
                 } else {
-                    productsUnavailable.push(item);
+                    productsUnavailable.push(product);
                 }
             }
             // Filtro mi carrito los productos que puse en el array aux de no disponibles.
-            const purchasedProducts = cart.product.filter((item) => !productsUnavailable.some((p) => p.idProduct._id === item.idProduct._id));
+            const ProductsAvailable = cart.product.filter(
+                (product) => !productsUnavailable.some((productUnavailable) => productUnavailable.idProduct._id === product.idProduct._id)
+            );
 
-            if (purchasedProducts.length > 0) {
+            if (ProductsAvailable.length > 0) {
                 //Generacion de ticket
                 const ticket = {
                     code: codeGenerator(),
                     purchaseDateTime: new Date(),
-                    amount: purchasedProducts.reduce((total, item) => total + item.quantity * item.idProduct.price, 0),
+                    amount: ProductsAvailable.reduce((total, product) => total + product.quantity * product.idProduct.price, 0),
                     purchaser: tokenUser.user.email,
                 };
                 const createdTicket = await cartService.generateTicket(ticket);
-                await cartService.updateProducts(cid, productsUnavailable);
+                //await cartService.updateProducts(cid, productsUnavailable);
 
                 if (productsUnavailable.length > 0) {
                     return res.status(201).send({

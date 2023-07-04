@@ -24,9 +24,13 @@ switch (config.persistence) {
     case "FILE":
         const ProductDaoFile = require("./archivo/product.file");
         const UserDaoFile = require("./archivo/user.file");
+        const CartDaoFile = require("./archivo/cart.file");
+        const MessagesDaoFile = require("./archivo/message.file");
 
         UserDao = UserDaoFile;
         ProductDao = ProductDaoFile;
+        CartDao = CartDaoFile;
+        MessageDao = MessagesDaoFile;
         break;
 
     case "MEMORY":

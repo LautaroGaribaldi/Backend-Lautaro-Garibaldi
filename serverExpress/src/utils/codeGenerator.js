@@ -1,6 +1,6 @@
 function codeGenerator() {
     const date = Date.now().toString(); // Obtener la marca de tiempo actual
-    const prefijo = "LW-";
+    const prefijo = "LW-"; // lw de logic-work
 
     return prefijo + date;
 }

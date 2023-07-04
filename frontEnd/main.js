@@ -1,4 +1,3 @@
-console.log("sos peruano");
 const productList = document.getElementById("conteiner");
 
 fetch("http://localhost:8080/api/products", {
@@ -12,7 +11,6 @@ fetch("http://localhost:8080/api/products", {
 })
     .then((respuesta) => respuesta.json())
     .then((respuesta) => {
-        console.log(respuesta.payload);
         let html = ``;
         respuesta.payload.map((product) => {
             return (html += `<div class="card w-25">

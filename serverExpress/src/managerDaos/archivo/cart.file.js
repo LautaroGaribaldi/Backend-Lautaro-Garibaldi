@@ -66,6 +66,8 @@ class CartDaoFile {
     updateProducts = () => {};
 
     updateProduct = () => {};
+
+    generateTicket = () => {};
 }
 
 module.exports = CartDaoFile;
