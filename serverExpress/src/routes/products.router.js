@@ -8,7 +8,7 @@ class ProductsRouter extends RouterClass {
 
         this.get("/:pid", ["PUBLIC"], getProduct);
 
-        this.post("/", ["ADMIN"], createProduct);
+        this.post("/", ["PUBLIC"], createProduct);
 
         this.put("/:pid", ["ADMIN"], updateProduct);
 

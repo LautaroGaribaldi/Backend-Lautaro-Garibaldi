@@ -1,8 +1,21 @@
 const { Router } = require("express"); // Importo Router de express
 const { auth } = require("../middlewares/authentication.middleware");
 const { fork } = require("child_process");
+const { generateUser } = require("../utils/generateUserFaker");
+const { generateProduct } = require("../utils/generateProductFaker");
+const compression = require("express-compression");
 
 const router = Router();
+//router.use(compression()); gzip
+//brotli
+router.use(
+    compression({
+        brotli: {
+            enabled: true,
+            zlib: {},
+        },
+    })
+);
 
 function operacionCompleja() {
     let result = 0;
@@ -11,6 +24,39 @@ function operacionCompleja() {
     }
     return result;
 }
+
+router.get("/mocks", (req, res) => {
+    let users = [];
+    for (let i = 0; i < 100; i++) {
+        users.push(generateUser());
+    }
+    res.send({ status: "success", payload: users });
+});
+
+router.get("/mockingProducts", (req, res) => {
+    let products = [];
+    let code = 1;
+    let prefijo = "00";
+    for (let i = 0; i < 100; i++) {
+        if (code > 9 && code < 100) {
+            prefijo = "0";
+        }
+        if (code >= 100) {
+            prefijo = "";
+        }
+        products.push(generateProduct(prefijo, code));
+        code++;
+    }
+    res.send({ status: "success", payload: products });
+});
+
+router.get("/stringMuyLargo", (req, res) => {
+    let string = `Hola coder soy un string ridiculamente largo`;
+    for (let i = 0; i < 5e4; i++) {
+        string += `Hola coder soy un string ridiculamente largo`;
+    }
+    res.send(string);
+});
 
 router.get("/block", (req, res) => {
     const result = operacionCompleja();

@@ -21,6 +21,7 @@ const app = express();
 
 // handelbars prueba
 const handlebars = require("express-handlebars");
+const { errorHandler } = require("./middlewares/error.middleware.js");
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
@@ -79,10 +80,13 @@ passport.use(passport.initialize());
 
 app.use(routerApp);
 
-app.use((err, req, res, next) => {
+/*app.use((err, req, res, next) => {
     console.log(err);
     res.status(500).send("Algo salio mal.");
-});
+});*/
+
+app.use(errorHandler);
+
 // Implementaicon de Socket.Io
 const PORT = process.env.PORT;
 const httpServer = app.listen(PORT, () => {

@@ -1,4 +1,7 @@
 const { userService, cartService } = require("../service/index.js");
+const { CustomError } = require("../utils/CustomError/CustomError.js");
+const { Errors } = require("../utils/CustomError/EErrors.js");
+const { generateUserErrorInfo } = require("../utils/CustomError/info.js");
 const { createHash, isValidPassword } = require("../utils/bcryptHash.js");
 //const passport = require("passport");
 const { generateToken } = require("../utils/jwt.js");
@@ -84,9 +87,23 @@ class sessionControler {
         }
     };
 
-    register = async (req, res) => {
+    register = async (req, res, next) => {
         try {
             const { firstName, lastName, email, dateOfBirth, password } = req.body;
+
+            if (!firstName || !lastName || !email || !password) {
+                CustomError.createError({
+                    name: "User Creation Error",
+                    cause: generateUserErrorInfo({
+                        firstName,
+                        lastName,
+                        email,
+                        password,
+                    }),
+                    message: "Error trying to created user",
+                    code: Errors.INVALID_TYPE_ERROR,
+                });
+            }
 
             // validar si existe ya el email
             const existUser = await userService.getUserByEmail(email);
@@ -131,7 +148,8 @@ class sessionControler {
             //res.status(200).send({ status: "success", message: "usuario creado correctamente", accessToken });
         } catch (error) {
             console.log(error);
-            res.sendServerError(error);
+            next(error);
+            //res.sendServerError(error);
         }
     };
 

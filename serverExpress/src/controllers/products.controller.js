@@ -1,5 +1,8 @@
 //const productManager = require("../managerDaos/mongo/product.mongo.js");
 const { productService } = require("../service/index.js");
+const { CustomError } = require("../utils/CustomError/CustomError.js");
+const { Errors } = require("../utils/CustomError/EErrors.js");
+const { generateProductErrorInfo } = require("../utils/CustomError/info.js");
 
 class ProductControler {
     getProducts = async (req, res) => {
@@ -67,9 +70,19 @@ class ProductControler {
         }
     };
 
-    createProduct = async (req, res) => {
+    createProduct = async (req, res, next) => {
         try {
             let product = await req.body;
+
+            //Manejo de errores personalizado
+            if (!product.title || !product.description || !product.price || !product.code || !product.category || !product.stock) {
+                CustomError.createError({
+                    name: "Product Creation Error",
+                    cause: generateProductErrorInfo(product),
+                    message: "Error trying to created product",
+                    code: Errors.INVALID_TYPE_ERROR,
+                });
+            }
             let data = await productService.createProduct(product);
             //console.log(data);
             if (data.status === "error") {
@@ -83,11 +96,13 @@ class ProductControler {
                 payload: product,
             });
         } catch (error) {
-            res.status(500).send({
+            console.log(error);
+            next(error);
+            /*res.status(500).send({
                 status: "ERROR",
                 error: "Ha ocurrido un error al subir el productos",
             });
-            return error;
+            return error;*/
         }
     };
 
