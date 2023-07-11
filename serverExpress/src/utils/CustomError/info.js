@@ -4,6 +4,7 @@ exports.generateUserErrorInfo = (user) => {
     * firstName:  needs to a String, recived: ${user.firstName}
     * lastName:  needs to a String, recived: ${user.lastName}
     * email:  needs to a String, recived: ${user.email}
+    * password:  needs to a String, recived: ${user.password}
     `;
 };
 
