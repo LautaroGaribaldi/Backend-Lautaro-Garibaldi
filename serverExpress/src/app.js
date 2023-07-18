@@ -22,6 +22,7 @@ const app = express();
 // handelbars prueba
 const handlebars = require("express-handlebars");
 const { errorHandler } = require("./middlewares/error.middleware.js");
+const { addLogger } = require("./middlewares/addLogger.middleware.js");
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
@@ -29,6 +30,7 @@ app.set("view engine", "handlebars");
 
 app.use(express.json());
 app.use(cors());
+app.use(addLogger);
 app.use(express.urlencoded({ extended: true })); // Configuro mi servidor para que reciba  datos complejos por url.
 app.use(cookieParser("Palabr4S3cret4"));
 app.use("/static", express.static(__dirname + "/public"));

@@ -12,6 +12,7 @@ dotenv.config({
 module.exports = {
     // genero la coneccion y muestro un mensaje
     persistence: process.env.PERSISTENCE,
+    environment: process.env.ENVIRONMENT,
     port: process.env.PORT,
     /*connectDB: () => {
         connect(process.env.MONGO_URL);

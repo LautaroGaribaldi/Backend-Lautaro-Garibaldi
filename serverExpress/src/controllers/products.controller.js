@@ -33,6 +33,7 @@ class ProductControler {
             let data = await productService.getProducts(limit, page, query, sortType);
 
             if (((!parseInt(limit) && parseInt(limit) !== 0) || parseInt(limit) < 0) && limit !== undefined) {
+                req.logger.warning("limit debe ser un numero positivo");
                 return res.status(400).send({ status: "ERROR", error: "limit debe ser un numero positivo" }); // Verifico que no me pase letras o numeros negativos en el limite.
             }
 
@@ -42,6 +43,7 @@ class ProductControler {
                 ...data, //si paso bien el limite paso data
             });
         } catch (error) {
+            req.logger.fatal({ message: error });
             res.status(500).send({
                 status: "ERROR",
                 error: "Ha ocurrido un error al obtener los productos",
@@ -55,13 +57,17 @@ class ProductControler {
             const { pid } = req.params;
 
             let data = await productService.getProduct(pid);
-            if (!data || data.status === "error") return res.status(404).send({ status: "ERROR", error: "Not found" }); // si no lo encuentro devuelvo un 404 con error
+            if (!data || data.status === "error") {
+                req.logger.error("Error al obtener el producto");
+                return res.status(404).send({ status: "ERROR", error: "Not found" });
+            } // si no lo encuentro devuelvo un 404 con error
             return res.sendSuccess(data);
             /*return res.status(200).send({
                 status: "success",
                 payload: data,
             });*/ // si lo encuentro devuelvo el producto.*/
         } catch (error) {
+            req.logger.fatal({ message: error });
             res.status(500).send({
                 status: "ERROR",
                 error: "Ha ocurrido un error al obtener el producto",
@@ -76,6 +82,7 @@ class ProductControler {
 
             //Manejo de errores personalizado
             if (!product.title || !product.description || !product.price || !product.code || !product.category || !product.stock) {
+                req.logger.warning("Algun campo del producto esta vacio.");
                 CustomError.createError({
                     name: "Product Creation Error",
                     cause: generateProductErrorInfo(product),
@@ -96,7 +103,7 @@ class ProductControler {
                 payload: product,
             });
         } catch (error) {
-            console.log(error);
+            req.logger.fatal({ message: error });
             next(error);
             /*res.status(500).send({
                 status: "ERROR",
@@ -115,6 +122,7 @@ class ProductControler {
             let data = await productService.updateProduct(pid, productUpdated);
 
             if (data.matchedCount === 0 || data.status === "error") {
+                req.logger.warning(`No se encontro el producto id ${pid}`);
                 return res.status(404).send({
                     status: "error",
                     error: `No existe el producto id ${pid}`,
@@ -126,6 +134,7 @@ class ProductControler {
                 payload: productUpdated,
             });
         } catch (error) {
+            req.logger.fatal({ message: error });
             res.status(500).send({
                 status: "ERROR",
                 error: "Ha ocurrido un error al actualizar el producto",
@@ -141,6 +150,7 @@ class ProductControler {
             let result = await productService.deleteProduct(pid);
 
             if (result.deletedCount === 0 || result.status === "error") {
+                req.logger.warning(`No existe el producto id ${pid}`);
                 return res.status(404).send({
                     status: "error",
                     error: `No existe el producto id ${pid}`,
@@ -152,6 +162,7 @@ class ProductControler {
                 payload: result,
             });
         } catch (error) {
+            req.logger.fatal({ message: error });
             res.status(500).send({
                 status: "ERROR",
                 error: "Ha ocurrido un error al Borrar el producto",

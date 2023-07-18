@@ -13,6 +13,7 @@ class cartController {
 
             // si dio error muestro el error
             if (!result || result.status === "error") {
+                req.logger.error("Error al crear el carrito");
                 return res.status(404).send({
                     status: "error",
                     error: result,
@@ -24,6 +25,7 @@ class cartController {
                 payload: result,
             });
         } catch (error) {
+            req.logger.fatal({ message: error });
             res.status(500).send({
                 status: "ERROR",
                 error: "Ha ocurrido un error al crear el carrito",
@@ -38,10 +40,12 @@ class cartController {
 
             const isValidCid = await verifyCid(cid);
             if (!isValidCid) {
+                req.logger.warning(`No existe el carrito id ${cid}`);
                 return res.status(404).send({ status: "error", error: `No existe el carrito id ${cid}` });
             }
             const isPidValid = await verifyPid(pid); // Verifica si el pid que pasaste existe
             if (!isPidValid) {
+                req.logger.warning(`No existe el producto id ${pid}`);
                 return res.status(404).send({
                     status: "error",
                     error: `No existe el producto id ${pid}`,
@@ -54,6 +58,7 @@ class cartController {
                 payload: result,
             });
         } catch (error) {
+            req.logger.fatal({ message: error });
             res.status(500).send({
                 status: "ERROR",
                 error: "Ha ocurrido un error al crear el carrito",
@@ -67,6 +72,7 @@ class cartController {
             const { cid } = req.params;
             const isValidCid = await verifyCid(cid);
             if (!isValidCid) {
+                req.logger.warning(`No existe el carrito id ${cid}`);
                 return res.status(404).send({ status: "error", error: `No existe el carrito id ${cid}` });
             }
             let cart = await cartService.getCartById(cid); // busco el carrito por el id pasado
@@ -75,6 +81,7 @@ class cartController {
                 payload: cart,
             }); // si lo encuentro devuelvo el producto.
         } catch (error) {
+            req.logger.fatal({ message: error });
             res.status(500).send({
                 status: "ERROR",
                 error: "Ha ocurrido un error al obtener el carrito",
@@ -89,10 +96,12 @@ class cartController {
 
             const isValidCid = await verifyCid(cid);
             if (!isValidCid) {
+                req.logger.warning(`No existe el carrito id ${cid}`);
                 return res.status(404).send({ status: "error", error: `No existe el carrito id ${cid}` });
             }
             const isPidValid = await verifyPid(pid); // Verifica si el pid que pasaste existe
             if (!isPidValid) {
+                req.logger.warning(`No existe el producto id ${pid}`);
                 return res.status(404).send({
                     status: "error",
                     error: `No existe el producto id ${pid}`,
@@ -101,6 +110,7 @@ class cartController {
             const cart = await cartService.getCartById(cid);
             const products = cart.product.find((producto) => producto.idProduct._id == pid);
             if (!products) {
+                req.logger.warning(`No existe el producto id ${pid} en el carrito ${cid}`);
                 return res.status(404).send({
                     status: "error",
                     error: `No existe el producto id ${pid} en el carrito ${cid}`,
@@ -113,6 +123,7 @@ class cartController {
                 payload: result,
             });
         } catch (error) {
+            req.logger.fatal({ message: error });
             res.status(500).send({
                 status: "ERROR",
                 error: "Ha ocurrido un error al borrar  el producto",
@@ -126,6 +137,7 @@ class cartController {
 
             const isValidCid = await verifyCid(cid);
             if (!isValidCid) {
+                req.logger.warning(`No existe el carrito id ${cid}`);
                 return res.status(404).send({ status: "error", error: `No existe el carrito id ${cid}` });
             }
 
@@ -136,6 +148,7 @@ class cartController {
                 payload: result,
             });
         } catch (error) {
+            req.logger.fatal({ message: error });
             res.status(500).send({
                 status: "ERROR",
                 error: "Ha ocurrido un error al borrar  el producto",
@@ -153,12 +166,14 @@ class cartController {
             products.forEach(async (product) => {
                 const validPid = await productService.getProduct(product.idProduct);
                 if (!validPid || validPid.status === "error") {
+                    req.logger.warning(`No existe el producto id ${pid}`);
                     return res.status(404).send({ status: "error", error: `No existe el producto id ${product.idProduct}` });
                 }
             });
 
             const isValidCid = await verifyCid(cid);
             if (!isValidCid) {
+                req.logger.warning(`No existe el carrito id ${cid}`);
                 return res.status(404).send({ status: "error", error: `No existe el carrito id ${cid}` });
             }
 
@@ -169,6 +184,7 @@ class cartController {
                 payload: result,
             });
         } catch (error) {
+            req.logger.fatal({ message: error });
             res.status(500).send({
                 status: "ERROR",
                 error: "Ha ocurrido un error al borrar  el producto",
@@ -183,11 +199,13 @@ class cartController {
 
             const isValidCid = await verifyCid(cid);
             if (!isValidCid) {
+                req.logger.warning(`No existe el carrito id ${cid}`);
                 return res.status(404).send({ status: "error", error: `No existe el carrito id ${cid}` });
             }
 
             const isPidValid = await verifyPid(pid); // Verifica si el pid que pasaste existe
             if (!isPidValid) {
+                req.logger.warning(`No existe el producto id ${pid}`);
                 return res.status(404).send({
                     status: "error",
                     error: `No existe el producto id ${pid}`,
@@ -196,6 +214,7 @@ class cartController {
             const cart = await cartService.getCartById(cid); // Verifico si el cid que paso existe
             const products = cart.product.find((producto) => producto.idProduct._id == pid);
             if (!products) {
+                req.logger.warning(`No existe el producto id ${pid} en el carrito ${cid}`);
                 return res.status(404).send({
                     status: "error",
                     error: `No existe el producto id ${pid} en el carrito ${cid}`,
@@ -208,6 +227,7 @@ class cartController {
                 payload: result,
             });
         } catch (error) {
+            req.logger.fatal({ message: error });
             res.status(500).send({
                 status: "ERROR",
                 error: "Ha ocurrido un error al borrar  el producto",
@@ -223,6 +243,7 @@ class cartController {
 
             const isValidCid = await verifyCid(cid);
             if (!isValidCid) {
+                req.logger.warning(`No existe el carrito id ${cid}`);
                 return res.status(404).send({ status: "error", error: `No existe el carrito id ${cid}` });
             }
 
@@ -230,6 +251,7 @@ class cartController {
             let productsUnavailable = []; //Aux para ingresar productos sin stock
 
             if (cart.product.length == 0) {
+                req.logger.error(`No hay productos el carrito id ${cid}`);
                 return res.status(404).send({ status: "error", error: `No hay productos el carrito id ${cid}` }); // Verifico que el carrito no este vacio.
             }
             // Verifico si tengo stock necesario para cubrir la venta. luego si es asi hago el descuento de stock sino paso los productos a el aux de no disponibles
@@ -274,9 +296,11 @@ class cartController {
                     });
                 }
             } else {
+                req.logger.error(`Productos sin stock`);
                 return res.status(404).send({ status: "error", error: `Productos sin stock`, productsUnavailable });
             }
         } catch (error) {
+            req.logger.fatal({ message: error });
             res.status(500).send({
                 status: "ERROR",
                 error: "Ha ocurrido un error al realizar la compra",

@@ -17,6 +17,34 @@ router.use(
     })
 );
 
+router.get("/logger", (req, res) => {
+    req.logger.debug("Logger debug");
+    req.logger.http("Logger http");
+    req.logger.info("Logger info");
+    req.logger.warning("Logger warning");
+    req.logger.error("Logger error");
+    req.logger.fatal("Logger fatal");
+    res.send({ message: "Prueba de logger" });
+});
+
+router.get("/simple", (req, res) => {
+    let suma = 0;
+    for (let i = 0; i < 1000000; i++) {
+        suma += i;
+    }
+    res.send({ suma });
+});
+
+router.get("/compleja", (req, res) => {
+    let suma = 0;
+    for (let i = 0; i < 5e8; i++) {
+        suma += i;
+    }
+    res.send({ suma });
+});
+//artillery quick --count 40 --num 50 'http://localhost:8080/pruebas/simple' -o simple.json
+//artillery quick --count 40 --num 50 'http://localhost:8080/pruebas/compleja' -o compleja.json
+
 function operacionCompleja() {
     let result = 0;
     for (let i = 0; i < 9e9; i++) {
