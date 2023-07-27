@@ -36,7 +36,7 @@ class sessionControler {
             let html = `<div>
             <h1>Se ah solicitado un cambio de contraseña</h1>
             <p>Utilice este Link para cambiar su contraseña:</p>
-            <a href="/login">http://localhost:8080/recovery/${accessToken}</a>
+            <a href="http://localhost:8080/recovery/${accessToken}">Cambiar Contraseña</a>
             </div>`;
 
             let result = await sendMail(email, "Solicitud de recuperacion de contraseña", html);
@@ -55,7 +55,6 @@ class sessionControler {
             const token = req.cookies.recoveryToken;
 
             let user = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
-            console.log(user.user.email);
             const email = user.user.email;
 
             //Encontrar el usuario por email
@@ -65,14 +64,11 @@ class sessionControler {
                 req.logger.warning(`Usuario Inexistente`);
                 return res.send({ status: "error", message: "No existe ese usuario. revisar" });
             }
-            console.log("comparacion", isValidPassword(password, userDB));
 
             if (isValidPassword(password, userDB)) {
                 req.logger.warning(`Esta utilizando su contraseña anteriro. Debe ser diferente`);
                 return res.send({ status: "error", message: "Esta utilizando su contraseña anteriro. Debe ser diferente" });
             }
-
-            console.log("toke", token);
 
             //modifico la password, la hasheo y la guardo.
             userDB.password = createHash(password);
@@ -138,6 +134,7 @@ class sessionControler {
                     maxAge: 86400000,
                     httpOnly: true,
                 })
+                .clearCookie("recoveryToken")
                 .redirect("/products");
         } catch (error) {
             req.logger.fatal({ message: error });

@@ -93,9 +93,7 @@ class ProductControler {
                     code: Errors.INVALID_TYPE_ERROR,
                 });
             }
-            console.log("producto", product);
             let user = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
-            console.log("role?", user.user.role === "premium");
             if (user.user.role === "premium") {
                 product.owner = user.user.email;
             }

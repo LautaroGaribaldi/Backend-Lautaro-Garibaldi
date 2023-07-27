@@ -202,10 +202,7 @@ class viewsController {
             const { token } = req.params;
             const currentTimestamp = Math.floor(Date.now() / 1000);
 
-            console.log(token);
             let user = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
-            console.log(user);
-            console.log("horaactual", currentTimestamp);
 
             if (currentTimestamp > user.exp) {
                 return res.redirect("/recoveryPassword");

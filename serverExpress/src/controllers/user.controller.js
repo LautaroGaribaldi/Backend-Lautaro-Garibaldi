@@ -3,6 +3,8 @@ const { userService } = require("../service/index.js");
 const { createHash } = require("../utils/bcryptHash");
 const { sendMail } = require("../utils/sendMail.js");
 const { sendSms, sendWhatsapp } = require("../utils/sendSms.js");
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
 
 class UserController {
     //GET
@@ -86,6 +88,37 @@ class UserController {
             payload: result,
         });*/
             res.sendSuccess(result);
+        } catch (error) {
+            req.logger.fatal({ message: error });
+            res.sendServerError(error);
+        }
+    };
+
+    updatePremium = async (req, res) => {
+        try {
+            const { uid } = req.params;
+            let user = await userService.getUserById(uid);
+
+            if (!user) {
+                req.logger.warning("Usuario inexistente");
+                return res.status(404).send({ status: "error", message: "Usuario inexistente" });
+            }
+
+            if (user.role === "user") {
+                user.role = "premium";
+                await user.save();
+            } else if (user.role === "premium") {
+                user.role = "user";
+                await user.save();
+            } else {
+                return res.status(405).send({ status: "error", message: "El usuario seleccionado no es user ni premium" });
+            }
+
+            res.status(200).send({
+                status: "success",
+                payload: `Rol cambiado exitosamente a ${user.role}`,
+            });
+            //res.sendSuccess(result);
         } catch (error) {
             req.logger.fatal({ message: error });
             res.sendServerError(error);

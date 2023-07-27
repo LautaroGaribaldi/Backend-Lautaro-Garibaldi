@@ -17,19 +17,19 @@ class CartsRouter extends RouterClass {
     init() {
         this.post("/", ["PUBLIC"], createCart);
 
-        this.post("/:cid/product/:pid", ["USER", "PREMIUM"], addProduct);
+        this.post("/:cid/product/:pid", ["USER", "PREMIUM", "ADMIN"], addProduct);
 
-        this.get("/:cid/purchase/", ["USER"], purchase);
+        this.get("/:cid/purchase/", ["USER", "PREMIUM", "ADMIN"], purchase);
 
         this.get("/:cid", ["USER", "ADMIN"], getCart);
 
-        this.delete("/:cid/product/:pid", ["USER"], deleteProduct);
+        this.delete("/:cid/product/:pid", ["USER", "PREMIUM", "ADMIN"], deleteProduct);
 
-        this.delete("/:cid", ["USER"], emptyCart);
+        this.delete("/:cid", ["USER", "PREMIUM", "ADMIN"], emptyCart);
 
-        this.put("/:cid", ["USER"], updateProducts);
+        this.put("/:cid", ["USER", "PREMIUM", "ADMIN"], updateProducts);
 
-        this.put("/:cid/product/:pid", ["USER"], updateProduct);
+        this.put("/:cid/product/:pid", ["USER", "PREMIUM", "ADMIN"], updateProduct);
     }
 }
 

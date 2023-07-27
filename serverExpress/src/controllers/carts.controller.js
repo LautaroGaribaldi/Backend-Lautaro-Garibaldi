@@ -174,16 +174,28 @@ class cartController {
         try {
             const { cid } = req.params;
             const products = req.body;
+            const token = req.cookies.coderCookieToken;
+            let user = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
 
             //Verifico que todos los productos pasados en el array sean validos
             //formato (array de objetos[{idProduct,quantity}])
-            products.forEach(async (product) => {
+            for (const product of products) {
                 const validPid = await productService.getProduct(product.idProduct);
                 if (!validPid || validPid.status === "error") {
                     req.logger.warning(`No existe el producto id ${pid}`);
                     return res.status(404).send({ status: "error", error: `No existe el producto id ${product.idProduct}` });
                 }
-            });
+
+                if (user.user.role === "premium") {
+                    if (user.user.email === validPid.owner) {
+                        req.logger.warning(`El producto ${product.idProduct} pertenece a sus productos. no puede agregar sus propios productos!`);
+                        return res.status(404).send({
+                            status: "error",
+                            error: `el producto id ${product.idProduct} pertenece al usuario.`,
+                        });
+                    }
+                }
+            }
 
             const isValidCid = await verifyCid(cid);
             if (!isValidCid) {

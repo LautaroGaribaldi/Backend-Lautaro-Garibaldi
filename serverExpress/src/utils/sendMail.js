@@ -24,12 +24,12 @@ exports.sendMail = async (destino, subject, html) => {
         <h1>Prueba de envio de mail por servidor </h1>
         </div>`,*/
         html,
-        attachments: [
+        /*attachments: [
             {
                 filename: "placa.png",
                 path: __dirname + "/placa.png",
                 cid: "placa",
             },
-        ],
+        ],*/
     });
 };
