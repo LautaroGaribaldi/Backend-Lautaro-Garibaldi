@@ -23,6 +23,7 @@ const app = express();
 const handlebars = require("express-handlebars");
 const { errorHandler } = require("./middlewares/error.middleware.js");
 const { addLogger } = require("./middlewares/addLogger.middleware.js");
+const { logger } = require("./config/logger.js");
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
@@ -92,15 +93,15 @@ app.use(errorHandler);
 // Implementaicon de Socket.Io
 const PORT = process.env.PORT;
 const httpServer = app.listen(PORT, () => {
-    console.log(`Escuchando puerto ${PORT}`);
+    logger.info(`Escuchando puerto ${PORT}`);
 });
 
 const io = new Server(httpServer);
-
+/*
 objectConfig.connectDB(); //una instancia de nuestra base de datos
-
+*/
 io.on("connection", (socket) => {
-    console.log("Nuevo Cliente Conectado.");
+    logger.info("Nuevo Cliente Conectado.");
 
     socket.on("productDelete", async (pid) => {
         const id = await productService.getProduct(pid.id);

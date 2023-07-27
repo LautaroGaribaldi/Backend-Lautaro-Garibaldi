@@ -34,6 +34,11 @@ const productSchema = new Schema({
         type: Number,
         required: true,
     },
+    owner: {
+        type: String,
+        required: true,
+        default: "admin",
+    },
 });
 
 //{"title" : "Computadora", "description" : "computadora pa", "thumbnail" : "", "price" : 20, "stock" : 10, "code" : "AAA001"}

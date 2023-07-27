@@ -7,11 +7,22 @@ const passport = require("passport");
 require("dotenv").config();
 //const jwt = require("jsonwebtoken");
 const { notLoged } = require("../middlewares/notLoged.middleware.js");
-const { privatePage, recoveryPass, githubCallback, logout, login, register, current } = require("../controllers/session.controller.js");
+const {
+    privatePage,
+    recoveryPass,
+    githubCallback,
+    logout,
+    login,
+    register,
+    current,
+    recoveryPassMail,
+} = require("../controllers/session.controller.js");
 
 class SessionsRouter extends RouterClass {
     init() {
         this.get("/privada", ["ADMIN"], privatePage);
+
+        this.post("/recoveryPasswordMail", ["PUBLIC"], recoveryPassMail);
 
         this.post("/recoveryPassword", ["PUBLIC"], recoveryPass);
 

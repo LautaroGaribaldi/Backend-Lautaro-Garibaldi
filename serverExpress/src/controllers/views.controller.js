@@ -29,7 +29,13 @@ class viewsController {
                 products: payload,
             };
             res.render("home", object);
-        } catch (error) {}
+        } catch (error) {
+            req.logger.fatal({ message: error });
+            res.status(500).send({
+                status: "ERROR",
+                error: "Ha ocurrido un error al cargar la vista.",
+            });
+        }
     };
 
     products = async (req, res) => {
@@ -63,7 +69,13 @@ class viewsController {
                 nextPage,
             };
             res.render("products", object);
-        } catch (error) {}
+        } catch (error) {
+            req.logger.fatal({ message: error });
+            res.status(500).send({
+                status: "ERROR",
+                error: "Ha ocurrido un error al cargar la vista.",
+            });
+        }
     };
 
     carts = async (req, res) => {
@@ -89,7 +101,13 @@ class viewsController {
                 loged,
             };
             res.render("carts", object);
-        } catch (error) {}
+        } catch (error) {
+            req.logger.fatal({ message: error });
+            res.status(500).send({
+                status: "ERROR",
+                error: "Ha ocurrido un error al cargar la vista.",
+            });
+        }
     };
 
     chat = async (req, res) => {
@@ -105,74 +123,151 @@ class viewsController {
             }
             const role = tokenUser.user?.role === "admin" ? true : false;
             res.render("chat", { style: "index.css", loged, role });
-        } catch (error) {}
+        } catch (error) {
+            req.logger.fatal({ message: error });
+            res.status(500).send({
+                status: "ERROR",
+                error: "Ha ocurrido un error al cargar la vista.",
+            });
+        }
     };
 
     realTimeProducts = async (req, res) => {
-        let loged = false;
-        const { payload } = await productService.getProducts(20);
-        if (req.cookies.coderCookieToken) {
-            loged = true;
+        try {
+            let loged = false;
+            const { payload } = await productService.getProducts(20);
+            if (req.cookies.coderCookieToken) {
+                loged = true;
+            }
+            const token = req.cookies.coderCookieToken;
+            let tokenUser = "";
+            if (token) {
+                tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+            }
+            const role = tokenUser.user?.role === "admin" ? true : false;
+            const object = {
+                style: "index.css",
+                title: "Productos en tiempo real",
+                user: req.user,
+                loged,
+                role,
+                products: payload,
+            };
+            res.render("realTimeProducts", object);
+        } catch (error) {
+            req.logger.fatal({ message: error });
+            res.status(500).send({
+                status: "ERROR",
+                error: "Ha ocurrido un error al cargar la vista.",
+            });
         }
-        const token = req.cookies.coderCookieToken;
-        let tokenUser = "";
-        if (token) {
-            tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
-        }
-        const role = tokenUser.user?.role === "admin" ? true : false;
-        const object = {
-            style: "index.css",
-            title: "Productos en tiempo real",
-            user: req.user,
-            loged,
-            role,
-            products: payload,
-        };
-        res.render("realTimeProducts", object);
     };
 
     login = async (req, res) => {
-        const object = {
-            style: "index.css",
-            title: "Login",
-            //products: payload,
-        };
-        res.render("login", object);
+        try {
+            const object = {
+                style: "index.css",
+                title: "Login",
+                //products: payload,
+            };
+            res.render("login", object);
+        } catch (error) {
+            req.logger.fatal({ message: error });
+            res.status(500).send({
+                status: "ERROR",
+                error: "Ha ocurrido un error al cargar la vista.",
+            });
+        }
     };
 
     recoveryPass = async (req, res) => {
-        const object = {
-            style: "index.css",
-            title: "Recovery Password",
-            //products: payload,
-        };
-        res.render("recoveryPassword", object);
+        try {
+            const object = {
+                style: "index.css",
+                title: "Recovery Password",
+                //products: payload,
+            };
+            res.render("recoveryPassword", object);
+        } catch (error) {
+            req.logger.fatal({ message: error });
+            res.status(500).send({
+                status: "ERROR",
+                error: "Ha ocurrido un error al cargar la vista.",
+            });
+        }
+    };
+
+    recovery = async (req, res) => {
+        try {
+            const { token } = req.params;
+            const currentTimestamp = Math.floor(Date.now() / 1000);
+
+            console.log(token);
+            let user = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+            console.log(user);
+            console.log("horaactual", currentTimestamp);
+
+            if (currentTimestamp > user.exp) {
+                return res.redirect("/recoveryPassword");
+            }
+            const object = {
+                style: "index.css",
+                title: "Recovery Password",
+            };
+            res.cookie("recoveryToken", token, {
+                maxAge: 3600000,
+                httpOnly: true,
+            }).render("recovery", object);
+        } catch (error) {
+            req.logger.fatal({ message: error });
+            res.redirect("/recoveryPassword");
+            /*res.status(500).send({
+                status: "ERROR",
+                error: "Ha ocurrido un error al cargar la vista.",
+            });*/
+        }
     };
 
     register = async (req, res) => {
-        const object = {
-            style: "index.css",
-            title: "register",
-        };
-        res.render("registerForm", object);
+        try {
+            const object = {
+                style: "index.css",
+                title: "register",
+            };
+            res.render("registerForm", object);
+        } catch (error) {
+            req.logger.fatal({ message: error });
+            res.status(500).send({
+                status: "ERROR",
+                error: "Ha ocurrido un error al cargar la vista.",
+            });
+        }
     };
 
     profile = async (req, res) => {
-        let loged = false;
-        if (req.cookies.coderCookieToken) {
-            loged = true;
+        try {
+            let loged = false;
+            if (req.cookies.coderCookieToken) {
+                loged = true;
+            }
+            const token = req.cookies.coderCookieToken;
+            let tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+            const role = tokenUser.user?.role === "admin" ? true : false;
+            const object = {
+                style: "index.css",
+                title: "Login",
+                user: tokenUser.user, //req.user,
+                role,
+                loged,
+            };
+            res.render("profile", object);
+        } catch (error) {
+            req.logger.fatal({ message: error });
+            res.status(500).send({
+                status: "ERROR",
+                error: "Ha ocurrido un error al cargar la vista.",
+            });
         }
-        const token = req.cookies.coderCookieToken;
-        let tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
-        const role = tokenUser.user?.role === "admin" ? true : false;
-        const object = {
-            style: "index.css",
-            title: "Login",
-            user: tokenUser.user, //req.user,
-            role,
-            loged,
-        };
-        res.render("profile", object);
     };
 }
 

@@ -32,7 +32,7 @@ router.get("/simple", (req, res) => {
     for (let i = 0; i < 1000000; i++) {
         suma += i;
     }
-    res.send({ suma });
+    res.send({ status: "success", message: `El worker ${process.id} a atendido esta peticion el resultado es ${suma}` });
 });
 
 router.get("/compleja", (req, res) => {
@@ -40,7 +40,7 @@ router.get("/compleja", (req, res) => {
     for (let i = 0; i < 5e8; i++) {
         suma += i;
     }
-    res.send({ suma });
+    res.send({ status: "success", message: `El worker ${process.id} a atendido esta peticion el resultado es ${suma}` });
 });
 //artillery quick --count 40 --num 50 'http://localhost:8080/pruebas/simple' -o simple.json
 //artillery quick --count 40 --num 50 'http://localhost:8080/pruebas/compleja' -o compleja.json

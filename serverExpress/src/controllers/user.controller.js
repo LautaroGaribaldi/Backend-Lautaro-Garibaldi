@@ -11,7 +11,7 @@ class UserController {
             let users = await userService.getUsers(); // busco todos mis users
             res.sendSuccess(users);
         } catch (error) {
-            console.log(error);
+            req.logger.fatal({ message: error });
             res.sendServerError(error);
         }
     };
@@ -24,7 +24,7 @@ class UserController {
             let result = await sendMail("lautaro.garibaldi@gmail.com", "prueba abstraccion mail", html);
             res.sendSuccess("email Enviado");
         } catch (error) {
-            console.log(error);
+            req.logger.fatal({ message: error });
             res.sendServerError(error);
         }
     };
@@ -35,7 +35,7 @@ class UserController {
             //await sendWhatsapp();
             res.sendSuccess("sms Enviado");
         } catch (error) {
-            console.log(error);
+            req.logger.fatal({ message: error });
             res.sendServerError(error);
         }
     };
@@ -56,7 +56,7 @@ class UserController {
             //res.status(200).send({ result }); // devuelvo el resultado.
             res.sendSuccess(result);
         } catch (error) {
-            console.log(error);
+            req.logger.fatal({ message: error });
             res.sendServerError(error);
         }
     };
@@ -77,6 +77,7 @@ class UserController {
 
             let result = await userService.updateUser(uid, userToReplace);
             if (result.status === "error" || result.modifiedCount == 0) {
+                req.logger.error("Email vacio o no es valido.");
                 return res.sendServerError("Email vacio o no valido.");
             }
 
@@ -86,6 +87,7 @@ class UserController {
         });*/
             res.sendSuccess(result);
         } catch (error) {
+            req.logger.fatal({ message: error });
             res.sendServerError(error);
         }
     };
@@ -99,6 +101,7 @@ class UserController {
 
             res.sendSuccess(result);
         } catch (error) {
+            req.logger.fatal({ message: error });
             res.sendServerError(error);
         }
     };

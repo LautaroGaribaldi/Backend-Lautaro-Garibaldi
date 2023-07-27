@@ -3,6 +3,8 @@ const { productService } = require("../service/index.js");
 const { CustomError } = require("../utils/CustomError/CustomError.js");
 const { Errors } = require("../utils/CustomError/EErrors.js");
 const { generateProductErrorInfo } = require("../utils/CustomError/info.js");
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
 
 class ProductControler {
     getProducts = async (req, res) => {
@@ -79,6 +81,7 @@ class ProductControler {
     createProduct = async (req, res, next) => {
         try {
             let product = await req.body;
+            const token = req.cookies.coderCookieToken;
 
             //Manejo de errores personalizado
             if (!product.title || !product.description || !product.price || !product.code || !product.category || !product.stock) {
@@ -89,6 +92,12 @@ class ProductControler {
                     message: "Error trying to created product",
                     code: Errors.INVALID_TYPE_ERROR,
                 });
+            }
+            console.log("producto", product);
+            let user = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+            console.log("role?", user.user.role === "premium");
+            if (user.user.role === "premium") {
+                product.owner = user.user.email;
             }
             let data = await productService.createProduct(product);
             //console.log(data);
@@ -116,8 +125,20 @@ class ProductControler {
     updateProduct = async (req, res) => {
         try {
             const { pid } = req.params;
+            const token = req.cookies.coderCookieToken;
+            let user = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
 
             let productUpdated = req.body;
+            let product = await productService.getProduct(pid);
+            if (user.user.role !== "admin") {
+                if (user.user.email !== product.owner) {
+                    req.logger.warning(`El producto ${pid} no pertenece a sus productos. Solo puede modificar sus propios productos!`);
+                    return res.status(404).send({
+                        status: "error",
+                        error: `el producto id ${pid} no pertenece al usuario.`,
+                    });
+                }
+            }
 
             let data = await productService.updateProduct(pid, productUpdated);
 
@@ -146,6 +167,19 @@ class ProductControler {
     deleteProduct = async (req, res) => {
         try {
             const { pid } = req.params;
+            const token = req.cookies.coderCookieToken;
+            let user = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+
+            let product = await productService.getProduct(pid);
+            if (user.user.role !== "admin") {
+                if (user.user.email !== product.owner) {
+                    req.logger.warning(`El producto ${pid} no pertenece a sus productos. Solo puede borrar sus propios productos!`);
+                    return res.status(404).send({
+                        status: "error",
+                        error: `el producto id ${pid} no pertenece al usuario.`,
+                    });
+                }
+            }
 
             let result = await productService.deleteProduct(pid);
 

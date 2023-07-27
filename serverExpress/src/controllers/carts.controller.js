@@ -37,6 +37,8 @@ class cartController {
     addProduct = async (req, res) => {
         try {
             const { cid, pid } = req.params;
+            const token = req.cookies.coderCookieToken;
+            let user = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
 
             const isValidCid = await verifyCid(cid);
             if (!isValidCid) {
@@ -50,6 +52,18 @@ class cartController {
                     status: "error",
                     error: `No existe el producto id ${pid}`,
                 });
+            }
+
+            let product = await productService.getProduct(pid);
+
+            if (user.user.role === "premium") {
+                if (user.user.email === product.owner) {
+                    req.logger.warning(`El producto ${pid} pertenece a sus productos. no puede agregar sus propios productos!`);
+                    return res.status(404).send({
+                        status: "error",
+                        error: `el producto id ${pid} pertenece al usuario.`,
+                    });
+                }
             }
 
             let result = await cartService.addProduct(cid, pid); // si todo es ok agrego el producto al carrito

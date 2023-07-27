@@ -7,6 +7,11 @@ const generateToken = (user) => {
     return token;
 };
 
+const generateTokenRecovery = (user) => {
+    const token = jwt.sign({ user }, process.env.JWT_PRIVATE_KEY, { expiresIn: 3600 });
+    return token;
+};
+
 const authToken = (req, res, next) => {
     const authHeader = req.headers["authorization"];
 
@@ -26,5 +31,6 @@ const authToken = (req, res, next) => {
 
 module.exports = {
     generateToken,
+    generateTokenRecovery,
     authToken,
 };
