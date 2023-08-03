@@ -43,7 +43,7 @@ class RouterClass {
         const authHeader = req.headers.authorization;
         //console.log(req.cookies.coderCookieToken);
         //if (!authHeader) return res.send({ status: "error", error: "not authorized" });
-        if (!req.cookies.coderCookieToken) return res.send({ status: "error", error: "not authorized" });
+        if (!req.cookies.coderCookieToken) return res.status(401).send({ status: "error", error: "not authorized" });
         //const token = authHeader.split(" ")[1];
         const token = req.cookies.coderCookieToken;
         const user = jwt.verify(token, process.env.JWT_PRIVATE_KEY);

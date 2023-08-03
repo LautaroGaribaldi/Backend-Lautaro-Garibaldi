@@ -11,6 +11,10 @@ const passport = require("passport");
 require("dotenv").config();
 const cors = require("cors");
 
+//swagger
+const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerUiExpress = require("swagger-ui-express");
+
 const app = express();
 const serverHttp = new ServerHTTP(app);
 const io = new ServerIO(serverHttp);
@@ -46,6 +50,21 @@ app.use(routerApp);
 
 app.use(errorHandler);
 
+const swaggerOptions = {
+    definition: {
+        openapi: "3.0.1",
+        info: {
+            title: "Documentacion de LogicWork",
+            description: "Esta es la primera documentacion de LogicWork",
+        },
+    },
+    apis: [`${__dirname}/docs/**/*.yaml`],
+};
+
+const specs = swaggerJsDoc(swaggerOptions);
+
+app.use("/docs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
+
 // Implementaicon de Socket.Io
 const PORT = process.env.PORT;
 socketMessage(io);
@@ -56,5 +75,5 @@ socketMessage(io);
 //     });
 
 serverHttp.listen(PORT, () => {
-    logger.info(`Escuchando puerto ${PORT}`);
+    console.log(`Escuchando puerto ${PORT}`);
 });

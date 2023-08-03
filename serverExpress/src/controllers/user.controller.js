@@ -103,7 +103,6 @@ class UserController {
                 req.logger.warning("Usuario inexistente");
                 return res.status(404).send({ status: "error", message: "Usuario inexistente" });
             }
-
             if (user.role === "user") {
                 user.role = "premium";
                 await user.save();

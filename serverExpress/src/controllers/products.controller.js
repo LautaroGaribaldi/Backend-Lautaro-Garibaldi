@@ -81,7 +81,7 @@ class ProductControler {
     createProduct = async (req, res, next) => {
         try {
             let product = await req.body;
-            const token = req.cookies.coderCookieToken;
+            const token = req.cookies?.coderCookieToken;
 
             //Manejo de errores personalizado
             if (!product.title || !product.description || !product.price || !product.code || !product.category || !product.stock) {
@@ -93,9 +93,12 @@ class ProductControler {
                     code: Errors.INVALID_TYPE_ERROR,
                 });
             }
-            let user = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
-            if (user.user.role === "premium") {
-                product.owner = user.user.email;
+            let user;
+            if (token) {
+                user = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+                if (user.user.role === "premium") {
+                    product.owner = user.user.email;
+                }
             }
             let data = await productService.createProduct(product);
             //console.log(data);

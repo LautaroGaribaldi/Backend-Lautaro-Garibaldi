@@ -1,0 +1,194 @@
+paths:
+    /api/carts/:
+        get:
+            summary: obtiene todos los productos
+            tags:
+                - Carts
+            responses:
+                "200":
+                    description: los productos fueron obtenidos correctamente
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#components/schemas/Product"
+                "500":
+                    description: error interno de server, usualmente generado por una query defectuosa
+        post:
+            summary: Creacion de producto
+            tags:
+                - Carts
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#components/requestBodies/updateProduct"
+            responses:
+                "201":
+                    description: el producto se creo de forma correcta.
+    /api/carts/{pid}:
+        get:
+            summary: obtiene un producto por su pid
+            tags:
+                - Carts
+            parameters:
+                - name: pid
+                  in: path
+                  required: true
+                  description: el id del producto a solicitar.
+                  schema:
+                      $type: String
+            responses:
+                "200":
+                    description: el producto fue obtenido correctamente
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#components/schemas/Product"
+                "500":
+                    description: error interno de server, usualmente generado por una query defectuosa
+        put:
+            summary: Se actualiza un producto por su pid
+            tags:
+                - Carts
+            parameters:
+                - name: pid
+                  in: path
+                  required: true
+                  description: El product id del producto a actualizar.
+                  schema:
+                      $type: String
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#components/requestBodies/updateProduct"
+            responses:
+                "200":
+                    description: el producto fue actualizado correctamente
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#components/schemas/Product"
+                "401":
+                    description: No esta Logeado o su usuario no tiene permisos para hacer esta accion.
+                "500":
+                    description: error interno de server, usualmente generado por una query defectuosa
+        delete:
+            summary: Se Borra un producto por su pid
+            tags:
+                - Carts
+            parameters:
+                - name: pid
+                  in: path
+                  required: true
+                  description: El product id del producto a borrar.
+                  schema:
+                      $type: String
+            responses:
+                "200":
+                    description: el producto fue borrado correctamente
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#components/schemas/Product"
+                "401":
+                    description: No esta Logeado o su usuario no tiene permisos para hacer esta accion.
+                "500":
+                    description: error interno de server, usualmente generado por una query defectuosa
+components:
+    schemas:
+        Product:
+            type: object
+            properties:
+                _id:
+                    type: string
+                    description: Id autogenerado por Mongo.
+                title:
+                    type: string
+                    description: Titulo del producto.
+                description:
+                    type: string
+                    description: Descripcion del producto.
+                price:
+                    type: number
+                    description: precio del producto.
+                thumbnail:
+                    type: array
+                    items:
+                        type: string
+                        description: imagen del producto
+                    description: array de imagenes del producto.
+                code:
+                    type: string
+                    description: codigo del producto.
+                category:
+                    type: string
+                    description: categoria del producto.
+                status:
+                    type: boolean
+                    description: estado del producto.
+                stock:
+                    type: number
+                    description: stock del producto.
+                owner:
+                    type: string
+                    description: email del creador del producto.
+            example:
+                _id: ObjectId("fafafafafa213fafa")
+                title: i9 12gen
+                description: Procesador Intel I9 12 generation
+                price: 300
+                thumbnail: ["imagen1", "imagen2"]
+                code: AAA150
+                category: procesador
+                status: true
+                stock: 10
+                owner: usuario@gmail.com
+    requestBodies:
+        updateProduct:
+            type: object
+            properties:
+                title:
+                    type: string
+                    description: Titulo del producto.
+                description:
+                    type: string
+                    description: Descripcion del producto.
+                price:
+                    type: number
+                    description: precio del producto.
+                thumbnail:
+                    type: array
+                    items:
+                        type: string
+                        description: imagen del producto
+                    description: array de imagenes del producto.
+                code:
+                    type: string
+                    description: codigo del producto.
+                category:
+                    type: string
+                    description: categoria del producto.
+                status:
+                    type: boolean
+                    description: estado del producto.
+                stock:
+                    type: number
+                    description: stock del producto.
+                owner:
+                    type: string
+                    description: email del creador del producto.
+            example:
+                title: i9 12gen
+                description: Procesador Intel I9 12 generation
+                price: 300
+                thumbnail: ["imagen1", "imagen2"]
+                code: AAA150
+                category: procesador
+                status: true
+                stock: 10
+                owner: usuario@gmail.com
