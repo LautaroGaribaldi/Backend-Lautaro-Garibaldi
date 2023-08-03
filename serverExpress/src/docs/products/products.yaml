@@ -26,8 +26,12 @@ paths:
                         schema:
                             $ref: "#components/requestBodies/updateProduct"
             responses:
-                "201":
+                "200":
                     description: el producto se creo de forma correcta.
+                "404":
+                    description: error al crear el producto.
+                "500":
+                    description: error interno de server, usualmente generado por una query defectuosa
     /api/products/{pid}:
         get:
             summary: obtiene un producto por su pid
@@ -47,6 +51,8 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#components/schemas/Product"
+                "404":
+                    description: Producto pasado por pid no encontrado.
                 "500":
                     description: error interno de server, usualmente generado por una query defectuosa
         put:
@@ -75,6 +81,8 @@ paths:
                                 $ref: "#components/schemas/Product"
                 "401":
                     description: No esta Logeado o su usuario no tiene permisos para hacer esta accion.
+                "404":
+                    description: No existe el producto pasado por pid. El producto pasado por pid para modificar no pertenece al usuario logeado.
                 "500":
                     description: error interno de server, usualmente generado por una query defectuosa
         delete:
@@ -97,6 +105,8 @@ paths:
                                 $ref: "#components/schemas/Product"
                 "401":
                     description: No esta Logeado o su usuario no tiene permisos para hacer esta accion.
+                "404":
+                    description: No existe el producto pasado por pid. El producto pasado por pid para borrar no pertenece al usuario logeado.
                 "500":
                     description: error interno de server, usualmente generado por una query defectuosa
 components:

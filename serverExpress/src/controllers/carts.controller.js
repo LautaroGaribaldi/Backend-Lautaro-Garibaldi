@@ -104,6 +104,23 @@ class cartController {
         }
     };
 
+    getCarts = async (req, res) => {
+        try {
+            let carts = await cartService.getCarts(); // busco el carrito por el id pasado
+            return res.status(200).send({
+                status: "success",
+                payload: carts,
+            }); // si lo encuentro devuelvo el producto.
+        } catch (error) {
+            req.logger.fatal({ message: error });
+            res.status(500).send({
+                status: "ERROR",
+                error: "Ha ocurrido un error al obtener el carrito",
+            });
+            return error;
+        }
+    };
+
     deleteProduct = async (req, res) => {
         try {
             const { cid, pid } = req.params;
@@ -182,14 +199,14 @@ class cartController {
             for (const product of products) {
                 const validPid = await productService.getProduct(product.idProduct);
                 if (!validPid || validPid.status === "error") {
-                    req.logger.warning(`No existe el producto id ${pid}`);
+                    req.logger.warning(`No existe el producto id ${product.idProduct}`);
                     return res.status(404).send({ status: "error", error: `No existe el producto id ${product.idProduct}` });
                 }
 
                 if (user.user.role === "premium") {
                     if (user.user.email === validPid.owner) {
                         req.logger.warning(`El producto ${product.idProduct} pertenece a sus productos. no puede agregar sus propios productos!`);
-                        return res.status(404).send({
+                        return res.status(403).send({
                             status: "error",
                             error: `el producto id ${product.idProduct} pertenece al usuario.`,
                         });
@@ -278,7 +295,7 @@ class cartController {
 
             if (cart.product.length == 0) {
                 req.logger.error(`No hay productos el carrito id ${cid}`);
-                return res.status(404).send({ status: "error", error: `No hay productos el carrito id ${cid}` }); // Verifico que el carrito no este vacio.
+                return res.status(405).send({ status: "error", error: `No hay productos el carrito id ${cid}` }); // Verifico que el carrito no este vacio.
             }
             // Verifico si tengo stock necesario para cubrir la venta. luego si es asi hago el descuento de stock sino paso los productos a el aux de no disponibles
             for (const product of cart.product) {
@@ -308,14 +325,14 @@ class cartController {
                 await cartService.updateProducts(cid, productsUnavailable);
 
                 if (productsUnavailable.length > 0) {
-                    return res.status(201).send({
+                    return res.status(202).send({
                         status: "success",
                         message: "Compra exitosa. algunos producto no tienen stock. revisar carrito!",
                         ticket: createdTicket,
                         productsUnavailable,
                     });
                 } else {
-                    return res.status(201).send({
+                    return res.status(200).send({
                         status: "success",
                         message: "Compra exitosa.",
                         ticket: createdTicket,

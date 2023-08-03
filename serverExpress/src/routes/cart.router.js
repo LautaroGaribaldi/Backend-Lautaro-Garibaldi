@@ -11,6 +11,7 @@ const {
     updateProducts,
     updateProduct,
     purchase,
+    getCarts,
 } = require("../controllers/carts.controller.js");
 
 class CartsRouter extends RouterClass {
@@ -21,7 +22,9 @@ class CartsRouter extends RouterClass {
 
         this.get("/:cid/purchase/", ["USER", "PREMIUM", "ADMIN"], purchase);
 
-        this.get("/:cid", ["USER", "ADMIN"], getCart);
+        this.get("/:cid", ["USER", "ADMIN", "PREMIUM"], getCart);
+
+        this.get("/", ["ADMIN", "PREMIUM"], getCarts);
 
         this.delete("/:cid/product/:pid", ["USER", "PREMIUM", "ADMIN"], deleteProduct);
 

@@ -1,63 +1,66 @@
 paths:
     /api/carts/:
         get:
-            summary: obtiene todos los productos
+            summary: obtiene todos los carritos
             tags:
                 - Carts
             responses:
                 "200":
-                    description: los productos fueron obtenidos correctamente
+                    description: los carritos fueron obtenidos correctamente
                     content:
                         application/json:
                             schema:
-                                type: array
-                                items:
-                                    $ref: "#components/schemas/Product"
+                                $ref: "#components/schemas/Carts"
+                "401":
+                    description: No esta Logeado o su usuario no tiene permisos para hacer esta accion.
                 "500":
                     description: error interno de server, usualmente generado por una query defectuosa
         post:
-            summary: Creacion de producto
+            summary: Creacion de carrito
             tags:
                 - Carts
             requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#components/requestBodies/updateProduct"
             responses:
-                "201":
-                    description: el producto se creo de forma correcta.
-    /api/carts/{pid}:
+                "200":
+                    description: el carrito se creo de forma correcta.
+                "401":
+                    description: No esta Logeado o su usuario no tiene permisos para hacer esta accion.
+                "500":
+                    description: error interno de server, usualmente generado por una query defectuosa
+    /api/carts/{cid}:
         get:
-            summary: obtiene un producto por su pid
+            summary: obtiene un carrito por su cid
             tags:
                 - Carts
             parameters:
-                - name: pid
+                - name: cid
                   in: path
                   required: true
-                  description: el id del producto a solicitar.
+                  description: el id del carrito a solicitar.
                   schema:
                       $type: String
             responses:
                 "200":
-                    description: el producto fue obtenido correctamente
+                    description: el carrito fue obtenido correctamente
                     content:
                         application/json:
                             schema:
-                                $ref: "#components/schemas/Product"
+                                $ref: "#components/schemas/Cart"
+                "401":
+                    description: No esta Logeado o su usuario no tiene permisos para hacer esta accion.
+                "404":
+                    description: No existe el carrito pasado por cid.
                 "500":
                     description: error interno de server, usualmente generado por una query defectuosa
         put:
-            summary: Se actualiza un producto por su pid
+            summary: Se actualiza un carrito por su cid
             tags:
                 - Carts
             parameters:
-                - name: pid
+                - name: cid
                   in: path
                   required: true
-                  description: El product id del producto a actualizar.
+                  description: El cart id del carrito a actualizar.
                   schema:
                       $type: String
             requestBody:
@@ -65,130 +68,203 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#components/requestBodies/updateProduct"
+                            $ref: "#components/requestBodies/updateCart"
             responses:
                 "200":
-                    description: el producto fue actualizado correctamente
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#components/schemas/Product"
+                    description: el carrito fue actualizado correctamente
                 "401":
                     description: No esta Logeado o su usuario no tiene permisos para hacer esta accion.
+                "403":
+                    description: El producto pasado por el body pertenece al propio usuario.
+                "404":
+                    description: El Carrito pasado por cid o el producto pasado por el body no existe.
                 "500":
                     description: error interno de server, usualmente generado por una query defectuosa
         delete:
-            summary: Se Borra un producto por su pid
+            summary: Vacia el carrito pasado por cid
             tags:
                 - Carts
             parameters:
-                - name: pid
+                - name: cid
                   in: path
                   required: true
-                  description: El product id del producto a borrar.
+                  description: El cart id a vaciar.
                   schema:
                       $type: String
             responses:
                 "200":
-                    description: el producto fue borrado correctamente
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#components/schemas/Product"
+                    description: el carrito se vacio correctamente
                 "401":
                     description: No esta Logeado o su usuario no tiene permisos para hacer esta accion.
+                "404":
+                    description: El Carrito pasado por cid no existe.
+                "500":
+                    description: error interno de server, usualmente generado por una query defectuosa
+    /api/carts/{cid}/product/{pid}:
+        post:
+            summary: agrega un producto por pid a un carrito por su cid
+            tags:
+                - Carts
+            parameters:
+                - name: cid
+                  in: path
+                  required: true
+                  description: el id del carrito a solicitar.
+                  schema:
+                      $type: String
+                - name: pid
+                  in: path
+                  required: true
+                  description: el id del producto a agregar.
+                  schema:
+                      $type: String
+            responses:
+                "200":
+                    description: El producto se agrego correctamente al carrito.
+                "401":
+                    description: No esta Logeado o su usuario no tiene permisos para hacer esta accion.
+                "404":
+                    description: El Carrito pasado por cid o el producto pasado por pid no existe.
+                "500":
+                    description: error interno de server, usualmente generado por una query defectuosa
+        put:
+            summary: Actualiza la cantidad de un producto pasado por pid del carrito pasado por cid
+            tags:
+                - Carts
+            parameters:
+                - name: cid
+                  in: path
+                  required: true
+                  description: el id del carrito a solicitar.
+                  schema:
+                      $type: String
+                - name: pid
+                  in: path
+                  required: true
+                  description: el id del producto a modificar.
+                  schema:
+                      $type: String
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#components/requestBodies/quantityUpdate"
+            responses:
+                "200":
+                    description: el producto fue actualizado correctamente
+                "401":
+                    description: No esta Logeado o su usuario no tiene permisos para hacer esta accion.
+                "404":
+                    description: El Carrito pasado por cid o el producto pasado por pid no existe. No existe el producto pasado por pid en el carrito pasado por cid.
+                "500":
+                    description: error interno de server, usualmente generado por una query defectuosa
+        delete:
+            summary: Elimina el producto pasado por pid del carrito pasado por cid
+            tags:
+                - Carts
+            parameters:
+                - name: cid
+                  in: path
+                  required: true
+                  description: el id del carrito a solicitar.
+                  schema:
+                      $type: String
+                - name: pid
+                  in: path
+                  required: true
+                  description: el id del producto a eliminar.
+                  schema:
+                      $type: String
+            responses:
+                "200":
+                    description: el producto se elimino correctamente del carrito.
+                "401":
+                    description: No esta Logeado o su usuario no tiene permisos para hacer esta accion.
+                "404":
+                    description: El Carrito pasado por cid o el producto pasado por pid no existe. El producto pasado por pid no se encuentra en el carrito pasado por pid.
+                "500":
+                    description: error interno de server, usualmente generado por una query defectuosa
+    /api/carts/{cid}/purchase:
+        get:
+            summary: Finaliza la compra del carrito pasado por cid
+            tags:
+                - Carts
+            parameters:
+                - name: cid
+                  in: path
+                  required: true
+                  description: el id del carrito a comprar.
+                  schema:
+                      $type: String
+            responses:
+                "200":
+                    description: Compra realizada con exito.
+                "202":
+                    description: Compra parcialmente realizada. Algunos productos no tenian stock.
+                "404":
+                    description: No existe el carrito pasado por cid. No hay stock de los productos en el carrito pasado por cid
+                "405":
+                    description: El carrito esta vacio.
                 "500":
                     description: error interno de server, usualmente generado por una query defectuosa
 components:
     schemas:
-        Product:
+        Cart:
             type: object
             properties:
                 _id:
                     type: string
                     description: Id autogenerado por Mongo.
-                title:
-                    type: string
-                    description: Titulo del producto.
-                description:
-                    type: string
-                    description: Descripcion del producto.
-                price:
-                    type: number
-                    description: precio del producto.
-                thumbnail:
+                product:
                     type: array
+                    description: Array de  productos.
                     items:
-                        type: string
-                        description: imagen del producto
-                    description: array de imagenes del producto.
-                code:
-                    type: string
-                    description: codigo del producto.
-                category:
-                    type: string
-                    description: categoria del producto.
-                status:
-                    type: boolean
-                    description: estado del producto.
-                stock:
-                    type: number
-                    description: stock del producto.
-                owner:
-                    type: string
-                    description: email del creador del producto.
+                        type: object
+                        properties:
+                            idProduct:
+                                type: string
+                            quantity:
+                                type: number
+                        description: producto
             example:
-                _id: ObjectId("fafafafafa213fafa")
-                title: i9 12gen
-                description: Procesador Intel I9 12 generation
-                price: 300
-                thumbnail: ["imagen1", "imagen2"]
-                code: AAA150
-                category: procesador
-                status: true
-                stock: 10
-                owner: usuario@gmail.com
-    requestBodies:
-        updateProduct:
+                _id: ObjectId(fafafafafa213fafa)
+                product: { idProduct: ObjectId(fras213czfk21), quantity: 21 }
+        Carts:
             type: object
             properties:
-                title:
+                _id:
                     type: string
-                    description: Titulo del producto.
-                description:
-                    type: string
-                    description: Descripcion del producto.
-                price:
-                    type: number
-                    description: precio del producto.
-                thumbnail:
+                    description: Id autogenerado por Mongo.
+                product:
                     type: array
+                    description: Array de  productos.
                     items:
-                        type: string
-                        description: imagen del producto
-                    description: array de imagenes del producto.
-                code:
-                    type: string
-                    description: codigo del producto.
-                category:
-                    type: string
-                    description: categoria del producto.
-                status:
-                    type: boolean
-                    description: estado del producto.
-                stock:
-                    type: number
-                    description: stock del producto.
-                owner:
-                    type: string
-                    description: email del creador del producto.
+                        type: object
+                        properties:
+                            idProduct:
+                                type: string
+                            quantity:
+                                type: number
+                        description: producto
             example:
-                title: i9 12gen
-                description: Procesador Intel I9 12 generation
-                price: 300
-                thumbnail: ["imagen1", "imagen2"]
-                code: AAA150
-                category: procesador
-                status: true
-                stock: 10
-                owner: usuario@gmail.com
+                - _id: ObjectId(fafafafafa213fafa12)
+                  product: { idProduct: ObjectId(fras213czfk21), quantity: 21 }
+                - _id: ObjectId(fafafafafa213fafa13)
+                  product: { idProduct: ObjectId(fras213czfk21), quantity: 21 }
+    requestBodies:
+        updateCart:
+            type: array
+            description: Array de Productos
+            items:
+                type: object
+                properties:
+                    idProduct:
+                        type: string
+                    quantity:
+                        type: number
+            example: [{ idProduct: 645118051b516b766f362c0a, quantity: 2 }, { idProduct: 645118051b516b766f362c0f, quantity: 3 }]
+        quantityUpdate:
+            type: number
+            description: Cantidad a modificar.
+            example: { quantity: 3 }
