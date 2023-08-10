@@ -217,7 +217,7 @@ class viewsController {
             }).render("recovery", object);
         } catch (error) {
             req.logger.fatal({ message: error });
-            res.redirect("/recoveryPassword");
+            //res.redirect("/recoveryPassword");
             /*res.status(500).send({
                 status: "ERROR",
                 error: "Ha ocurrido un error al cargar la vista.",

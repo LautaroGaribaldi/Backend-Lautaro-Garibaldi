@@ -58,6 +58,13 @@ class ProductDaoMongo {
             return { status: "error", error: error };
         }
     }
+    async getProductBy(params) {
+        try {
+            return await this.productModel.findOne(params);
+        } catch (error) {
+            return { status: "error", error: error };
+        }
+    }
     async createProduct(newProduct) {
         try {
             return await this.productModel.create(newProduct);

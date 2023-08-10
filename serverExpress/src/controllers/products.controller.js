@@ -110,7 +110,7 @@ class ProductControler {
             }
             res.status(200).send({
                 status: "success",
-                payload: product,
+                payload: data,
             });
         } catch (error) {
             req.logger.fatal({ message: error });

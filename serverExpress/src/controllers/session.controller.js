@@ -165,7 +165,7 @@ class sessionControler {
             const existUser = await userService.getUserByEmail(email);
             if (existUser) {
                 req.logger.warning(`Error al crear el usuario. el email ya fue utilizado.`);
-                return res.send({ status: "error", message: "el email ya fue utilizado" });
+                return res.status(400).send({ status: "error", message: "el email ya fue utilizado" });
             }
 
             let newCart = await cartService.createCart();
@@ -185,7 +185,7 @@ class sessionControler {
             let resultUser = await userService.createUser(newUser);
             if (resultUser.ERROR) {
                 req.logger.warning(`Error al crear el usuario. todos los campos son requeridos.`);
-                return res.status(200).send({ status: "Error", message: "Algun campo esta vacio" });
+                return res.status(400).send({ status: "Error", message: "Algun campo esta vacio" });
             }
 
             let accessToken = generateToken({
@@ -203,7 +203,7 @@ class sessionControler {
                 maxAge: 86400000,
                 httpOnly: true,
             }).redirect("/products");
-            //res.status(200).send({ status: "success", message: "usuario creado correctamente", accessToken });
+            //res.status(200).send({ status: "success", payload: resultUser, accessToken });
         } catch (error) {
             req.logger.fatal({ message: error });
             next(error);
@@ -214,7 +214,7 @@ class sessionControler {
     current = async (req, res) => {
         const token = req.cookies.coderCookieToken;
         let user = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
-        res.send(user.user);
+        res.send({ status: "success", payload: user.user });
     };
 }
 
