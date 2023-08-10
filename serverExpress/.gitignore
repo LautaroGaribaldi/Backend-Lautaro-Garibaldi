@@ -3,3 +3,4 @@ proccess/
 .env
 .env.development
 .env.production
+kubeusers.yaml
