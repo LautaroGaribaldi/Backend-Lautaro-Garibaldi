@@ -5,7 +5,8 @@ const expect = chai.expect;
 const requester = supertest("http://localhost:8080");
 
 describe("Testing de Logic-Work", () => {
-    describe("Test de producto", () => {
+    //Testing de los endpoints de productos
+    describe("Test de rutas de productos", () => {
         let productId;
         let cookieName = "coderCookieToken";
         let cookieValue =
@@ -34,14 +35,14 @@ describe("Testing de Logic-Work", () => {
         });
         it("El endpoint de Get /api/products debe mostrar todos los productos correctamente.", async () => {
             const { statusCode, _body, ok } = await requester.get("/api/products");
-            console.log("fifi", productId);
+            console.log(productId);
             console.log(statusCode);
             console.log(_body);
             console.log(ok);
             expect(ok).to.be.equal(true);
         });
 
-        it("El endpoint de Get /api/products/pid debe mostrar todos los productos correctamente.", async () => {
+        it("El endpoint de Get /api/products/pid debe mostrar el producto pasado por pid correctamente.", async () => {
             const { statusCode, _body, ok } = await requester.get(`/api/products/${productId}`);
             console.log(statusCode);
             console.log(_body);
@@ -73,7 +74,8 @@ describe("Testing de Logic-Work", () => {
         });
     });
 
-    describe("test de Sessions", () => {
+    //Testing de los endpoints de Sessions
+    describe("test de rutas de  Sessions", () => {
         let cookie;
         let recoveryCookie = {
             name: "recoveryToken",
@@ -89,9 +91,7 @@ describe("Testing de Logic-Work", () => {
                 admin: true,
             };
             const { statusCode, _body, ok } = await requester.post("/api/session/register").send(userMock);
-            //console.log(statusCode);
             console.log(_body);
-            //console.log(ok);
             expect(statusCode).to.be.equal(302);
         });
 
@@ -151,16 +151,138 @@ describe("Testing de Logic-Work", () => {
         });
     });
 
-    describe("Test de Carts", () => {
+    //Testing de los endpoints de Carts
+    describe("Test de rutas de Carts", () => {
         let cookieName = "coderCookieToken";
         let cookieValue =
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImZpcnN0TmFtZSI6IkxhdXRhcm8iLCJsYXN0TmFtZSI6IkdhcmliYWxkaSIsImVtYWlsIjoicHJ1ZWJhQGdtYWlsLmNvbSIsImRhdGVPZkJpcnRoIjoiMS8xMi8yMDAxIiwicm9sZSI6ImFkbWluIiwiY2FydElkIjp7Il9pZCI6IjY0ZDQyZDQzMWQ4MTg3NGFlZTY3MzhhMCIsInByb2R1Y3QiOltdLCJfX3YiOjB9fSwiaWF0IjoxNjkxNjY2MTQ3LCJleHAiOjE2OTE3NTI1NDd9.5Sstnzv6vlMccmnyTwJqu2r2WWatWrNmwy6n8oRJr0I; Max-Age";
+        let cart;
         it("El endpoint deve devolver todos los carritos.", async () => {
             const { statusCode, _body, ok } = await requester.get("/api/carts/").set("Cookie", [`${cookieName}=${cookieValue}`]);
-            console.log("fafe", statusCode);
-            console.log("fafa", Array.isArray(_body.payload));
-            console.log("fafi", ok);
+            console.log(statusCode);
+            console.log(Array.isArray(_body.payload));
+            console.log(ok);
             expect(Array.isArray(_body.payload)).to.be.equal(true);
+        });
+
+        it("El endpoint debe devolver el carrito pasado por cid.", async () => {
+            const cid = "64809a1b00bf8f27a549b044";
+            const { statusCode, _body, ok } = await requester.get(`/api/carts/${cid}`).set("Cookie", [`${cookieName}=${cookieValue}`]);
+            console.log(statusCode);
+            console.log(_body);
+            console.log(ok);
+            expect(_body.status).to.be.equal("success");
+            expect(_body.payload).to.have.property("_id");
+        });
+
+        it("El endpoint debe crear un carrito.", async () => {
+            const { statusCode, _body, ok } = await requester.post(`/api/carts/`).set("Cookie", [`${cookieName}=${cookieValue}`]);
+            console.log(statusCode);
+            console.log(_body);
+            console.log(ok);
+            cart = _body.payload._id;
+            console.log(cart);
+            expect(_body.status).to.be.equal("success");
+            expect(_body.payload).to.have.property("_id");
+        });
+
+        it("El endpoint debe agregar un producto por pid al carrito pasado por cid.", async () => {
+            //const cid = "64d4fee140c72ef27ddac715";
+            const pid = "645117891b516b766f362c08";
+            const { statusCode, _body, ok } = await requester
+                .post(`/api/carts/${cart}/product/${pid}`)
+                .set("Cookie", [`${cookieName}=${cookieValue}`]);
+            console.log(statusCode);
+            console.log(_body);
+            console.log(ok);
+            expect(_body.status).to.be.equal("success");
+            expect(_body.payload.modifiedCount).to.be.equal(1);
+        });
+
+        it("El endpoint debe modificar todo el array de producto al carrito pasado por cid.", async () => {
+            //const cid = "64d4fee140c72ef27ddac715";
+            //const pid = "645117891b516b766f362c07";
+            const products = [
+                { idProduct: "645117891b516b766f362c08", quantity: 2 },
+                { idProduct: "645118051b516b766f362c0a", quantity: 5 },
+            ];
+            const { statusCode, _body, ok } = await requester
+                .put(`/api/carts/${cart}`)
+                .set("Cookie", [`${cookieName}=${cookieValue}`])
+                .send(products);
+            console.log(statusCode);
+            console.log(_body);
+            console.log(ok);
+            expect(_body.status).to.be.equal("success");
+            expect(_body.payload).to.have.property("product");
+        });
+
+        it("El endpoint debe modificar un producto por pid al carrito pasado por cid.", async () => {
+            //const cid = "64d4fee140c72ef27ddac715";
+            const pid = "645118051b516b766f362c0a";
+            const quantity = {
+                quantity: 3,
+            };
+            const { statusCode, _body, ok } = await requester
+                .put(`/api/carts/${cart}/product/${pid}`)
+                .set("Cookie", [`${cookieName}=${cookieValue}`])
+                .send(quantity);
+            console.log(statusCode);
+            console.log(_body);
+            console.log(ok);
+            expect(_body.status).to.be.equal("success");
+            expect(_body.payload).to.have.property("product");
+        });
+
+        it("El endpoint debe borrar todo el array de producto al carrito pasado por cid.", async () => {
+            //const cid = "64d4fee140c72ef27ddac715";
+            const { statusCode, _body, ok } = await requester.delete(`/api/carts/${cart}`).set("Cookie", [`${cookieName}=${cookieValue}`]);
+            console.log(statusCode);
+            console.log(_body.payload.product);
+            console.log(ok);
+            expect(_body.status).to.be.equal("success");
+            expect(_body.payload.product).to.be.deep.equal([]);
+        });
+
+        it("El endpoint debe modificar todo el array de producto al carrito pasado por cid.", async () => {
+            //const cid = "64d4fee140c72ef27ddac715";
+            //const pid = "645117891b516b766f362c07";
+            const products = [
+                { idProduct: "645117891b516b766f362c08", quantity: 2 },
+                { idProduct: "645118051b516b766f362c0a", quantity: 5 },
+            ];
+            const { statusCode, _body, ok } = await requester
+                .put(`/api/carts/${cart}`)
+                .set("Cookie", [`${cookieName}=${cookieValue}`])
+                .send(products);
+            console.log(statusCode);
+            console.log(_body);
+            console.log(ok);
+            expect(_body.status).to.be.equal("success");
+            expect(_body.payload).to.have.property("product");
+        });
+
+        it("El endpoint debe borrar un producto por pid al carrito pasado por cid.", async () => {
+            //const cid = "64d4fee140c72ef27ddac715";
+            const pid = "645118051b516b766f362c0a";
+            const { statusCode, _body, ok } = await requester
+                .delete(`/api/carts/${cart}/product/${pid}`)
+                .set("Cookie", [`${cookieName}=${cookieValue}`]);
+            console.log(statusCode);
+            console.log(_body);
+            console.log(ok);
+            expect(_body.status).to.be.equal("success");
+            expect(_body.payload).to.have.property("product");
+        });
+
+        it("El endpoint debe comprar el carrito y generar un ticket.", async () => {
+            //const cid = "64d4fee140c72ef27ddac715";
+            const { statusCode, _body, ok } = await requester.get(`/api/carts/${cart}/purchase/`).set("Cookie", [`${cookieName}=${cookieValue}`]);
+            console.log(statusCode);
+            console.log(_body);
+            console.log(ok);
+            expect(_body.status).to.be.equal("success");
+            expect(_body).to.have.property("ticket");
         });
     });
 });
