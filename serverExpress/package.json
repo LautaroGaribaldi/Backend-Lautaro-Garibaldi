@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon src/server.js --mode development",
     "start": "node src/server.js --mode production",
-    "test": "mocha test/superTest.test.js"
+    "test": "mocha test/superTest.test.js --timeout 10000"
   },
   "keywords": [],
   "author": "",

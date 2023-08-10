@@ -14,7 +14,7 @@ const { sendMail } = require("../utils/sendMail.js");
 
 class sessionControler {
     privatePage = (req, res) => {
-        res.send("todo lo que esta aca solo lo ve admin logeado");
+        res.send({ status: "success", payload: "todo lo que esta aca solo lo ve admin logeado" });
     };
 
     recoveryPassMail = async (req, res) => {
@@ -26,7 +26,7 @@ class sessionControler {
 
             if (!userDB) {
                 req.logger.warning(`Usuario Inexistente`);
-                return res.send({ status: "error", message: "No existe ese usuario. revisar" });
+                return res.status(404).send({ status: "error", message: "No existe ese usuario. revisar" });
             }
 
             const accessToken = generateTokenRecovery({
@@ -41,7 +41,7 @@ class sessionControler {
 
             let result = await sendMail(email, "Solicitud de recuperacion de contraseña", html);
 
-            res.send({ status: "sucess", message: "email enviado" });
+            res.send({ status: "success", message: "email enviado" });
         } catch (error) {
             req.logger.fatal({ message: error });
             res.sendServerError(error);
@@ -73,7 +73,7 @@ class sessionControler {
             //modifico la password, la hasheo y la guardo.
             userDB.password = createHash(password);
             await userDB.save();
-            res.clearCookie("recoveryToken").send({ status: "sucess", message: "Contraseña Cambiada" });
+            res.clearCookie("recoveryToken").send({ status: "success", message: "Contraseña Cambiada" });
             //res.redirect("/login");
         } catch (error) {
             req.logger.fatal({ message: error });
