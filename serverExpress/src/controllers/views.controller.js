@@ -1,4 +1,4 @@
-const { productService, cartService } = require("../service/index.js");
+const { productService, cartService, userService } = require("../service/index.js");
 const { loged } = require("../middlewares/loged.middleware.js");
 const { notLoged } = require("../middlewares/notLoged.middleware.js");
 require("dotenv").config();
@@ -277,6 +277,15 @@ class viewsController {
             const token = req.cookies.coderCookieToken;
             let tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
             const role = tokenUser.user?.role === "admin" ? true : false;
+
+            let user = await userService.getUserById(uid);
+            if (tokenUser.user.email !== user.email) {
+                req.logger.warning("No puedes subir archivos a otro usuario!");
+                return res.status(404).send({
+                    status: "ERROR",
+                    error: "No puedes subir archivos a otro usuario.",
+                });
+            }
             const object = {
                 style: "index.css",
                 title: "Subir Archivos",
