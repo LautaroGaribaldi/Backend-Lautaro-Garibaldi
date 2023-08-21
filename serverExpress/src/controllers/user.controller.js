@@ -1,4 +1,5 @@
 //const UserDaoMongo = require("../managerDaos/mongo/user.mongo.js");
+const { UserModel } = require("../managerDaos/mongo/model/user.model.js");
 const { userService } = require("../service/index.js");
 const { createHash } = require("../utils/bcryptHash");
 const { sendMail } = require("../utils/sendMail.js");
@@ -98,11 +99,20 @@ class UserController {
         try {
             const { uid } = req.params;
             let user = await userService.getUserById(uid);
+            let uploadIdentification = user.documents.some((document) => document.name.includes("identification"));
+            let uploadComprobant = user.documents.some((document) => document.name.includes("comprobant"));
+            let uploadAccountStatus = user.documents.some((document) => document.name.includes("accountStatus"));
 
             if (!user) {
                 req.logger.warning("Usuario inexistente");
                 return res.status(404).send({ status: "error", message: "Usuario inexistente" });
             }
+
+            if ((!uploadIdentification || !uploadComprobant || !uploadAccountStatus) && user.role === "user") {
+                req.logger.warning("Faltan subir archivos para poder realizar esta accion");
+                return res.status(404).send({ status: "error", message: "Faltan subir archivos para poder realizar esta accion" });
+            }
+
             if (user.role === "user") {
                 user.role = "premium";
                 await user.save();
@@ -132,6 +142,52 @@ class UserController {
             let result = await userService.deleteUser(uid);
 
             res.sendSuccess(result);
+        } catch (error) {
+            req.logger.fatal({ message: error });
+            res.sendServerError(error);
+        }
+    };
+
+    uploadDocuments = async (req, res) => {
+        try {
+            const { uid } = req.params;
+            const token = req.cookies.coderCookieToken;
+            let tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+            let user = await userService.getUserById(uid);
+
+            //console.log(req.files);
+
+            if (!user) {
+                req.logger.warning("Usuario inexistente");
+                return res.status(404).send({ status: "error", message: "Usuario inexistente" });
+            }
+
+            if (user.email !== tokenUser.user.email) {
+                req.logger.warning("No puede subir archivos a otro usuario!");
+                return res.status(404).send({ status: "error", message: "Usuario diferente" });
+            }
+
+            for (const [key, value] of Object.entries(req.files)) {
+                //console.log(key, value);
+                //console.log(user.documents.some((document) => document.name.includes(key)));
+                //valido si ya se cargo una imagen para ese tipo de archivo. si ya se cargo la piso.
+                if (user.documents.some((document) => document.name.includes(key))) {
+                    const existingDocumentIndex = user.documents.findIndex((document) => document.name.includes(key));
+                    let nameMatchingDocument = user.documents[existingDocumentIndex].name;
+                    await UserModel.updateOne(
+                        { _id: uid, "documents.name": nameMatchingDocument },
+                        { $set: { "documents.$.name": value[0].filename, "documents.$.reference": value[0].path } }
+                    );
+                } else {
+                    await UserModel.updateOne({ _id: uid }, { $push: { documents: { name: value[0].filename, reference: value[0].path } } });
+                }
+            }
+
+            res.status(200).send({
+                status: "success",
+                payload: `Archivos subidos correctamente.`,
+            });
+            //res.sendSuccess(result);
         } catch (error) {
             req.logger.fatal({ message: error });
             res.sendServerError(error);

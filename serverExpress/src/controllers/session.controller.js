@@ -92,7 +92,14 @@ class sessionControler {
         res.redirect("/products");
     };
 
-    logout = (req, res) => {
+    logout = async (req, res) => {
+        const token = req.cookies.coderCookieToken;
+        let user = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+        const userDB = await userService.getUserByEmail(user.user.email);
+        const diferenciaHoraria = 3 * 60 * 60 * 1000;
+        const horaArgentina = new Date(new Date() - diferenciaHoraria);
+        userDB.lastConnection = horaArgentina;
+        await userDB.save();
         res.clearCookie("coderCookieToken").redirect("/login");
     };
 
@@ -119,6 +126,10 @@ class sessionControler {
             }
 
             //console.log(userDB);
+            const diferenciaHoraria = 3 * 60 * 60 * 1000;
+            const horaArgentina = new Date(new Date() - diferenciaHoraria);
+            userDB.lastConnection = horaArgentina;
+            await userDB.save();
             const accessToken = generateToken({
                 firstName: userDB.firstName,
                 lastName: userDB.lastName,

@@ -1,0 +1,22 @@
+<div>
+    <h1>SUBIDA DE ARCHIVOS</h1>
+    <form action="/api/users/{{uid}}/documents" method="POST" enctype="multipart/form-data">
+        <label>Foto de perfil:</label>
+        <input type="file" name="profile" />
+        </br>
+        <label>Foto de productos:</label>
+        <input type="file" name="products" />
+        </br>
+        <label>Identificacion:</label>
+        <input type="file" name="identification" />
+        </br>
+        <label>Comprobante de domicilio:</label>
+        <input type="file" name="comprobant" />
+        </br>
+        <label>Comprobante de estado de cuenta:</label>
+        <input type="file" name="accountStatus" />
+        </br>
+        <button type="submit">Subir</button>
+    </form>
+
+</div>

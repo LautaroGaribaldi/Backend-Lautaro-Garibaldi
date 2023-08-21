@@ -266,6 +266,34 @@ class viewsController {
             });
         }
     };
+
+    uploader = async (req, res) => {
+        try {
+            const { uid } = req.params;
+            let loged = false;
+            if (req.cookies.coderCookieToken) {
+                loged = true;
+            }
+            const token = req.cookies.coderCookieToken;
+            let tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+            const role = tokenUser.user?.role === "admin" ? true : false;
+            const object = {
+                style: "index.css",
+                title: "Subir Archivos",
+                user: tokenUser.user, //req.user,
+                role,
+                loged,
+                uid,
+            };
+            res.render("uploader", object);
+        } catch (error) {
+            req.logger.fatal({ message: error });
+            res.status(500).send({
+                status: "ERROR",
+                error: "Ha ocurrido un error al cargar la vista.",
+            });
+        }
+    };
 }
 
 module.exports = new viewsController();
