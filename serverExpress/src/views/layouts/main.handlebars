@@ -21,6 +21,9 @@
                 {{#if role}}
                     <li><a href="/api/users">Users</a></li>
                 {{/if}}
+                {{#if loged}}
+                    <li><a href="/carts/{{cart}}">Carrito</a></li>
+                {{/if}}
             </ul>
         </nav>
         {{{body}}}

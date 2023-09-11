@@ -16,7 +16,11 @@
                 <strong>stock</strong>{{this.stock}}
                 <strong>status</strong>{{this.status}}
                 <strong>precio</strong>{{this.price}}
-                <button>Agregar al carrito</button>
+                <form id="agregarCarrito" action="/api/carts/{{../cart}}/product/{{this.id}}" method="POST">
+                <label >cantidad</label>
+                <input type="number" name="quantity" min="1" max="{{this.stock}}">
+                    <button>Agregar al carrito</button>
+                </form>
 
             </div>
         {{/each}}

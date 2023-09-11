@@ -2,6 +2,7 @@
 const { UserModel } = require("../managerDaos/mongo/model/user.model.js");
 const { userService } = require("../service/index.js");
 const { createHash } = require("../utils/bcryptHash");
+const { generateToken } = require("../utils/jwt.js");
 const { sendMail } = require("../utils/sendMail.js");
 const { sendSms, sendWhatsapp } = require("../utils/sendSms.js");
 require("dotenv").config();
@@ -103,6 +104,9 @@ class UserController {
             let uploadComprobant = user.documents.some((document) => document.name.includes("comprobant"));
             let uploadAccountStatus = user.documents.some((document) => document.name.includes("accountStatus"));
 
+            const token = req.cookies.coderCookieToken;
+            let tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+
             if (!user) {
                 req.logger.warning("Usuario inexistente");
                 return res.status(404).send({ status: "error", message: "Usuario inexistente" });
@@ -115,18 +119,27 @@ class UserController {
 
             if (user.role === "user") {
                 user.role = "premium";
+                tokenUser.user.role = "premium";
                 await user.save();
             } else if (user.role === "premium") {
                 user.role = "user";
+                tokenUser.user.role = "user";
                 await user.save();
             } else {
                 return res.status(405).send({ status: "error", message: "El usuario seleccionado no es user ni premium" });
             }
 
-            res.status(200).send({
-                status: "success",
-                payload: `Rol cambiado exitosamente a ${user.role}`,
-            });
+            let accessToken = generateToken(tokenUser.user);
+
+            res.cookie("coderCookieToken", accessToken, {
+                maxAge: 86400000,
+                httpOnly: true,
+            })
+                .status(200)
+                .send({
+                    status: "success",
+                    payload: `Rol cambiado exitosamente a ${user.role}`,
+                });
             //res.sendSuccess(result);
         } catch (error) {
             req.logger.fatal({ message: error });
@@ -188,6 +201,29 @@ class UserController {
                 payload: `Archivos subidos correctamente.`,
             });
             //res.sendSuccess(result);
+        } catch (error) {
+            req.logger.fatal({ message: error });
+            res.sendServerError(error);
+        }
+    };
+
+    deleteUsers = async (req, res) => {
+        try {
+            let html = `<div>
+            <h1>Se ah borrado su usuario por inactividad </h1>
+            </div>`;
+            let users = await userService.getUsers();
+            let fechaActual = new Date();
+            users.forEach(async (user) => {
+                let diferencia = fechaActual - new Date(user.lastConnection);
+                let dias = diferencia / (1000 * 60 * 60 * 24);
+                if (dias >= 2) {
+                    let usuario = await userService.getUserByEmail(user.email);
+                    let email = await sendMail(user.email, "Usuario Inactivo", html);
+                    let result = await userService.deleteUser(usuario._id);
+                }
+            });
+            res.sendSuccess("Se borraron usuarios con ultima conexion mayor a 2 dias.");
         } catch (error) {
             req.logger.fatal({ message: error });
             res.sendServerError(error);

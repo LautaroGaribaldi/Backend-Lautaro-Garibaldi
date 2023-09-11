@@ -25,6 +25,8 @@ class UserRouter extends RouterClass {
 
         this.get("/premium/:uid", ["ADMIN", "USER", "PREMIUM"], updatePremium);
 
+        this.get("/prueba", ["ADMIN", "USER", "PREMIUM"], deleteUsers);
+
         this.post("/", ["PUBLIC"], createUsers);
 
         this.post(
@@ -40,9 +42,9 @@ class UserRouter extends RouterClass {
             uploadDocuments
         );
 
-        this.put("/:uid", ["PUBLIC"], updateUsers);
+        this.put("/:uid", ["ADMIN"], updateUsers);
 
-        this.delete("/:uid", ["PUBLIC"], deleteUsers);
+        this.delete("/:uid", ["ADMIN"], deleteUsers);
     }
 }
 

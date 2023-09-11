@@ -17,6 +17,7 @@ const {
     profile,
     recovery,
     uploader,
+    userAdmin,
 } = require("../controllers/views.controller.js");
 
 class ViewsRouter extends RouterClass {
@@ -25,7 +26,7 @@ class ViewsRouter extends RouterClass {
 
         this.get("/products", ["PUBLIC"], products);
 
-        this.get("/carts/:cid", ["ADMIN"], carts);
+        this.get("/carts/:cid", ["PUBLIC"], carts);
 
         this.get("/chat", ["USER"], chat);
 
@@ -42,6 +43,8 @@ class ViewsRouter extends RouterClass {
         this.get("/profile", ["PUBLIC"], notLoged, profile);
 
         this.get("/uploadDocuments/:uid", ["ADMIN", "USER", "PREMIUM"], notLoged, uploader);
+
+        this.get("/userAdmin", ["ADMIN"], notLoged, userAdmin);
     }
 }
 

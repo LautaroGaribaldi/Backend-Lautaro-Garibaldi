@@ -18,8 +18,8 @@ class CartRepository {
         return result;
     };
 
-    addProduct = (cid, pid) => {
-        let result = this.dao.addProduct(cid, pid);
+    addProduct = (cid, pid, quantity) => {
+        let result = this.dao.addProduct(cid, pid, quantity);
         return result;
     };
 

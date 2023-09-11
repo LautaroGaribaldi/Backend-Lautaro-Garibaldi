@@ -1,10 +1,11 @@
 //const productManager = require("../managerDaos/mongo/product.mongo.js");
-const { productService } = require("../service/index.js");
+const { productService, userService } = require("../service/index.js");
 const { CustomError } = require("../utils/CustomError/CustomError.js");
 const { Errors } = require("../utils/CustomError/EErrors.js");
 const { generateProductErrorInfo } = require("../utils/CustomError/info.js");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
+const { sendMail } = require("../utils/sendMail.js");
 
 class ProductControler {
     getProducts = async (req, res) => {
@@ -180,6 +181,13 @@ class ProductControler {
                         error: `el producto id ${pid} no pertenece al usuario.`,
                     });
                 }
+            }
+
+            if (product.owner !== "admin") {
+                let html = `<div>
+                <h1>Se ah borrado su producto "${product.title}" por inactividad </h1>
+                </div>`;
+                let email = await sendMail(product.owner, "Se ah eliminado un producto suyo", html);
             }
 
             let result = await productService.deleteProduct(pid);

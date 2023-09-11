@@ -25,6 +25,7 @@ class viewsController {
                 style: "index.css",
                 title: "Productos",
                 loged,
+                cart: tokenUser?.user?.cartId?._id,
                 role,
                 products: payload,
             };
@@ -60,7 +61,7 @@ class viewsController {
                 style: "index.css",
                 title: "Productos",
                 products: payload,
-                //user: req.user,
+                cart: tokenUser?.user?.cartId?._id,
                 role: role,
                 loged,
                 hasPrevPage,
@@ -89,12 +90,14 @@ class viewsController {
                 loged = true;
             }
             const token = req.cookies.coderCookieToken;
+            if (!token) return res.sendServerError("Debes estar logeado para ver este sitio");
             let tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
             const role = tokenUser.user?.role === "admin" ? true : false;
             const object = {
                 style: "index.css",
                 title: "Productos",
                 //user: req.user,
+                cart: tokenUser?.user?.cartId?._id,
                 role: role,
                 products: cart?.product,
                 id: cart?._id,
@@ -122,7 +125,7 @@ class viewsController {
                 tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
             }
             const role = tokenUser.user?.role === "admin" ? true : false;
-            res.render("chat", { style: "index.css", loged, role });
+            res.render("chat", { style: "index.css", loged, role, cart: tokenUser?.user?.cartId?._id });
         } catch (error) {
             req.logger.fatal({ message: error });
             res.status(500).send({
@@ -150,6 +153,7 @@ class viewsController {
                 title: "Productos en tiempo real",
                 user: req.user,
                 loged,
+                cart: tokenUser?.user?.cartId?._id,
                 role,
                 products: payload,
             };
@@ -254,6 +258,7 @@ class viewsController {
                 style: "index.css",
                 title: "Login",
                 user: tokenUser.user, //req.user,
+                cart: tokenUser?.user?.cartId?._id,
                 role,
                 loged,
             };
@@ -290,11 +295,45 @@ class viewsController {
                 style: "index.css",
                 title: "Subir Archivos",
                 user: tokenUser.user, //req.user,
+                cart: tokenUser?.user?.cartId?._id,
                 role,
                 loged,
                 uid,
             };
             res.render("uploader", object);
+        } catch (error) {
+            req.logger.fatal({ message: error });
+            res.status(500).send({
+                status: "ERROR",
+                error: "Ha ocurrido un error al cargar la vista.",
+            });
+        }
+    };
+
+    userAdmin = async (req, res) => {
+        try {
+            let loged = false;
+            let users = await userService.getUsers();
+            console.log(users);
+            if (req.cookies.coderCookieToken) {
+                loged = true;
+            }
+            const token = req.cookies.coderCookieToken;
+            let tokenUser = "";
+            if (token) {
+                tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+            }
+            console.log("coco", tokenUser);
+            const role = tokenUser.user?.role === "admin" ? true : false;
+            const object = {
+                style: "index.css",
+                title: "Productos",
+                cart: tokenUser?.user?.cartId?._id,
+                role: role,
+                loged,
+                users,
+            };
+            res.render("userAdmin", object);
         } catch (error) {
             req.logger.fatal({ message: error });
             res.status(500).send({

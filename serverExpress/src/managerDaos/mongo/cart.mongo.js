@@ -27,14 +27,14 @@ class CartDaoMongo {
             return { status: "error", error: error };
         }
     };
-    addProduct = async (cid, pid) => {
+    addProduct = async (cid, pid, quantity) => {
         try {
             const cart = await this.cartModel.findOne({ _id: cid });
             const products = cart.product.find((producto) => producto.idProduct._id == pid); // Verifico si mi carrito ya tiene el producto que me paso.
             if (!products) {
-                return await this.cartModel.updateOne({ _id: cid }, { $push: { product: { idProduct: pid, quantity: 1 } } });
+                return await this.cartModel.updateOne({ _id: cid }, { $push: { product: { idProduct: pid, quantity: quantity } } });
             } else {
-                return await this.cartModel.updateOne({ _id: cid, "product.idProduct": pid }, { $inc: { "product.$.quantity": 1 } });
+                return await this.cartModel.updateOne({ _id: cid, "product.idProduct": pid }, { $inc: { "product.$.quantity": quantity } });
             }
         } catch (error) {
             return { status: "error", error: error };
