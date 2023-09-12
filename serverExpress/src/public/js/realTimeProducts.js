@@ -10,7 +10,6 @@ formDelete.addEventListener("submit", (evt) => {
 
 //Cambiar lista si se borra un producto en tiempo real.
 socket.on("newList", (data) => {
-    console.log(data);
     if (data.status === "error") {
         Swal.fire({
             title: "ERROR",
@@ -58,7 +57,6 @@ const addForm = document.querySelector("#addProduct");
 
 addForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    console.log(addForm.elements.thumbnail.value);
 
     socket.emit("newProduct", {
         title: addForm.elements.title.value,
@@ -81,7 +79,6 @@ socket.on("productAdd", (data) => {
         });
         return console.log(data.message);
     }
-    console.log(data);
     addForm.reset();
     let list = "";
     data.payload.forEach(({ _id, title, price, code, stock, category, description, status }) => {

@@ -5,7 +5,6 @@
         <h3>Tipo de Usuario: {{user.role}}</h3>
     {{/if}} --}}
     <h1>Bienvenido a Logic-Work!</h1>
-    <p>{{cart}}</p>
     <div class="cards">
         <table class="estilo">
             <tr>
@@ -14,6 +13,8 @@
                 <th>email</th>
                 <th>role</th>
                 <th>lastConnection</th>
+                <th>Cambiar rol</th>
+                <th>Borrar usuario</th>
             </tr>
             {{#each users}}
                 <tr>
@@ -22,6 +23,10 @@
                     <td>{{this.email}}</td>
                     <td>{{this.role}}</td>
                     <td>{{this.lastConnection}}</td>
+                    <td><form action="/api/users/premium/{{this._id}}" method="get"><button>cambiar rol</button></form></td>
+                    <td><form id="borrarUsuario{{this._id}}" data-user-id="{{this._id}}" data-user-rol="{{this.role}}"><button
+                                class="borrarUsuario"
+                            >borrar usuario</button></form></td>
                 </tr>
             {{/each}}
         </table>
@@ -35,3 +40,5 @@
         {{/if}}
     </center>
 </div>
+
+<script src="/static/js/adminUsers.js"></script>

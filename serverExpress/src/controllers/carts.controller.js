@@ -41,8 +41,6 @@ class cartController {
             const token = req.cookies.coderCookieToken;
             let user = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
 
-            console.log(req.body);
-
             const isValidCid = await verifyCid(cid);
             if (!isValidCid) {
                 req.logger.warning(`No existe el carrito id ${cid}`);

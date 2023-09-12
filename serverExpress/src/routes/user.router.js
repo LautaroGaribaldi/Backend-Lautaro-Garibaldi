@@ -12,6 +12,7 @@ const {
     sendSms,
     updatePremium,
     uploadDocuments,
+    deleteUser,
 } = require("../controllers/user.controller.js");
 const { uploader } = require("../utils/multer.js");
 
@@ -44,7 +45,7 @@ class UserRouter extends RouterClass {
 
         this.put("/:uid", ["ADMIN"], updateUsers);
 
-        this.delete("/:uid", ["ADMIN"], deleteUsers);
+        this.delete("/:uid", ["ADMIN"], deleteUser);
     }
 }
 

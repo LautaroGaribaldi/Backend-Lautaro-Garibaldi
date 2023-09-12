@@ -7,6 +7,7 @@ class UsersDto {
         this.usersArray.forEach((user) => {
             let { _id, firstName, lastName, email, dateOfBirth, role, cartId, lastConnection } = user;
             let userToInsert = {
+                _id,
                 firstName,
                 lastName,
                 email,

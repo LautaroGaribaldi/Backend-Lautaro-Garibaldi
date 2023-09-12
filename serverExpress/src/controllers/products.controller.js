@@ -32,15 +32,12 @@ class ProductControler {
             if (req.query.availability) {
                 query = { ...query, stock: { $gt: 0 } };
             }
-            //console.log(query);
             let data = await productService.getProducts(limit, page, query, sortType);
 
             if (((!parseInt(limit) && parseInt(limit) !== 0) || parseInt(limit) < 0) && limit !== undefined) {
                 req.logger.warning("limit debe ser un numero positivo");
                 return res.status(400).send({ status: "ERROR", error: "limit debe ser un numero positivo" }); // Verifico que no me pase letras o numeros negativos en el limite.
             }
-
-            //console.log(data);
 
             return res.status(200).send({
                 ...data, //si paso bien el limite paso data
@@ -102,7 +99,6 @@ class ProductControler {
                 }
             }
             let data = await productService.createProduct(product);
-            //console.log(data);
             if (data.status === "error") {
                 return res.status(404).send({
                     status: "error",

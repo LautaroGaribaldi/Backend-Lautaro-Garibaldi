@@ -20,7 +20,6 @@ class viewsController {
                 tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
             }
             const role = tokenUser.user?.role === "admin" ? true : false;
-            //console.log(payload);
             const object = {
                 style: "index.css",
                 title: "Productos",
@@ -43,7 +42,6 @@ class viewsController {
         try {
             const { page } = req.query;
             let loged = false;
-            //console.log(req.user);
             const { payload, hasPrevPage, hasNextPage, prevPage, nextPage, totalPages } = await productService.getProducts(undefined, page);
             if (page && (page > totalPages || page <= 0 || !parseInt(page))) {
                 return res.status(400).send({ status: "error", error: "Pagina inexistente" });
@@ -61,7 +59,7 @@ class viewsController {
                 style: "index.css",
                 title: "Productos",
                 products: payload,
-                cart: tokenUser?.user?.cartId?._id,
+                cart: tokenUser?.user?.cartId?._id ? tokenUser?.user?.cartId?._id : tokenUser?.user?.cartId,
                 role: role,
                 loged,
                 hasPrevPage,
@@ -314,7 +312,6 @@ class viewsController {
         try {
             let loged = false;
             let users = await userService.getUsers();
-            console.log(users);
             if (req.cookies.coderCookieToken) {
                 loged = true;
             }
@@ -323,7 +320,6 @@ class viewsController {
             if (token) {
                 tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
             }
-            console.log("coco", tokenUser);
             const role = tokenUser.user?.role === "admin" ? true : false;
             const object = {
                 style: "index.css",

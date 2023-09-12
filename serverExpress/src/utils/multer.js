@@ -3,7 +3,6 @@ const { dirname } = require("path");
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        //console.log(file);
         //Segun el nombre del campo es donde guardo la imagen.
         switch (file.fieldname) {
             case "profile":
@@ -19,8 +18,6 @@ const storage = multer.diskStorage({
         }
     },
     filename: (req, file, cb) => {
-        //console.log(file);
-        //console.log(req.params.uid);
         //nombre compuesto por: campo-UserId-NombreOriginal.
         cb(null, `${file.fieldname}-${req.params.uid}-${file.originalname}`);
     },

@@ -88,7 +88,6 @@ class sessionControler {
         } else {
             req.session.user.role = "user";
         }
-        //console.log("reqUser", req.user);
         res.redirect("/products");
     };
 
@@ -113,7 +112,6 @@ class sessionControler {
             //Verifico si existe el usuario y su contraseña
             const userDB = await userService.getUserByEmail(email);
             //let role = "";
-            //console.log(userDB);
             if (!userDB) {
                 req.logger.warning(`Usuario Inexistente`);
                 return res.send({ status: "error", message: "No existe ese usuario. revisar" });
@@ -125,7 +123,6 @@ class sessionControler {
                 return res.status(401).send({ status: "error", message: "El usuario o contraseña son incorrectos" });
             }
 
-            //console.log(userDB);
             const diferenciaHoraria = 3 * 60 * 60 * 1000;
             const horaArgentina = new Date(new Date() - diferenciaHoraria);
             userDB.lastConnection = horaArgentina;
@@ -138,7 +135,6 @@ class sessionControler {
                 role: userDB.role,
                 cartId: userDB.cartId,
             });
-            //console.log(accessToken);
             //res.redirect("/products");
             return res
                 .cookie("coderCookieToken", accessToken, {
@@ -180,8 +176,6 @@ class sessionControler {
             }
 
             let newCart = await cartService.createCart();
-
-            //console.log("carritoNuevo", newCart);
 
             const newUser = {
                 firstName,

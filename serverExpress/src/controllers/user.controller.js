@@ -129,13 +129,13 @@ class UserController {
                 return res.status(405).send({ status: "error", message: "El usuario seleccionado no es user ni premium" });
             }
 
-            let accessToken = generateToken(tokenUser.user);
+            //let accessToken = generateToken(tokenUser.user);
 
-            res.cookie("coderCookieToken", accessToken, {
+            res /*.cookie("coderCookieToken", accessToken, {
                 maxAge: 86400000,
                 httpOnly: true,
             })
-                .status(200)
+                */.status(200)
                 .send({
                     status: "success",
                     payload: `Rol cambiado exitosamente a ${user.role}`,
@@ -148,7 +148,7 @@ class UserController {
     };
 
     //DELETE
-    deleteUsers = async (req, res) => {
+    deleteUser = async (req, res) => {
         try {
             const { uid } = req.params;
 
@@ -167,8 +167,6 @@ class UserController {
             const token = req.cookies.coderCookieToken;
             let tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
             let user = await userService.getUserById(uid);
-
-            //console.log(req.files);
 
             if (!user) {
                 req.logger.warning("Usuario inexistente");
