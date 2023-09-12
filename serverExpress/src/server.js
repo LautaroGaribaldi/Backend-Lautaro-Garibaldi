@@ -66,7 +66,7 @@ const specs = swaggerJsDoc(swaggerOptions);
 app.use("/docs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 // Implementaicon de Socket.Io
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8080;
 socketMessage(io);
 
 // exports.initServer = () =>
