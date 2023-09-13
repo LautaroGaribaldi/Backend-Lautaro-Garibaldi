@@ -7,11 +7,11 @@ const UserRepository = require("../repositories/user.repository");
 const MessageRepository = require("../repositories/message.repository");
 const CartRepository = require("../repositories/cart.repository");
 
-const contactService = new ContactRepository(new ContactDao());
-const userService = new UserRepository(new UserDao());
-const productService = new ProductRepository(new ProductDao());
-const cartService = new CartRepository(new CartDao());
-const messageService = new MessageRepository(new MessageDao());
+const contactService = new ContactRepository(ContactDao);
+const userService = new UserRepository(UserDao);
+const productService = new ProductRepository(ProductDao);
+const cartService = new CartRepository(CartDao);
+const messageService = new MessageRepository(MessageDao);
 
 module.exports = {
     userService,

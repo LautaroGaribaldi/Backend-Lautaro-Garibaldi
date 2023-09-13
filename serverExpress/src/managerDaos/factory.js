@@ -14,11 +14,11 @@ switch (config.persistence) {
         const CartDaoMongo = require("./mongo/cart.mongo.js");
         const MessagesDaoMongo = require("./mongo/messsage.mongo.js");
 
-        UserDao = UserDaoMongo;
-        ProductDao = ProductDaoMongo;
+        UserDao = new UserDaoMongo();
+        ProductDao = new ProductDaoMongo();
         ContactDao = ContactDaoMongo;
-        CartDao = CartDaoMongo;
-        MessageDao = MessagesDaoMongo;
+        CartDao = new CartDaoMongo();
+        MessageDao = new MessagesDaoMongo();
         break;
 
     case "FILE":
