@@ -15,6 +15,7 @@ class viewsController {
                 loged = true;
             }
             const token = req.cookies.coderCookieToken;
+            console.log(req.cookies.coderCookieToken);
             let tokenUser = "";
             if (token) {
                 tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
@@ -83,6 +84,7 @@ class viewsController {
             let loged = false;
             //const role = req.user?.role === "admin" ? true : false;
             const cart = await cartService.getCartById(cid);
+            console.log(cart);
             if (!cart) return res.sendServerError("Carrito inexistente");
             if (req.cookies.coderCookieToken) {
                 loged = true;
@@ -90,12 +92,13 @@ class viewsController {
             const token = req.cookies.coderCookieToken;
             if (!token) return res.sendServerError("Debes estar logeado para ver este sitio");
             let tokenUser = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+            console.log(tokenUser?.user?.cartId);
             const role = tokenUser.user?.role === "admin" ? true : false;
             const object = {
                 style: "index.css",
                 title: "Productos",
                 //user: req.user,
-                cart: tokenUser?.user?.cartId?._id,
+                cart: tokenUser?.user?.cartId,
                 role: role,
                 products: cart?.product,
                 id: cart?._id,
